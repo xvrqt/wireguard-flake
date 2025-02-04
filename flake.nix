@@ -48,7 +48,7 @@
           ];
         };
         # Import the correct machine to configure Wireguard for it
-        archive = { lib, pkgs, config, ... }: {
+        archive = { config, ... }: {
           imports = [
             (import ./archive.nix { inherit config machines getClientPeers; })
           ];
