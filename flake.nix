@@ -10,6 +10,7 @@
       machines = import ./machines.nix;
 
       servers = nixpkgs.lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
+      clients = nixpkgs.lib.attrsets.filterAttrs (n: v: v.isServer == false) machines;
       peersAttrSet = builtins.mapAttrs
         (n: v:
           let
@@ -22,10 +23,20 @@
             allowedIPs = [ "${ip}/24" ];
           })
         servers;
+      clientsAttrSet = builtins.mapAttrs
+        (n: v: {
+          publicKey = v.publicKey;
+          allowedIPs = [ "${v.ip}/32" ];
+        })
+        servers;
       peersList = map
         (key: peersAttrSet.${key})
         (builtins.attrNames peersAttrSet);
+      clientsList = map
+        (key: peersAttrSet.${key})
+        (builtins.attrNames peersAttrSet);
       getServerPeers = peersList;
+      getClientPeers = clientsList;
     in
     {
       nixosModules = {
@@ -39,7 +50,7 @@
         # Import the correct machine to configure Wireguard for it
         archive = { lib, pkgs, config, ... }: {
           imports = [
-            (import ./archive.nix { inherit lib pkgs config agenix machines; })
+            (import ./archive.nix { inherit config machines getClientPeers; })
           ];
         };
         spark = { config, ... }: {

@@ -1,5 +1,10 @@
-{ lib, pkgs, config, agenix, machines, ... }:
+{ config
+, machines
+, getClientsList
+, ...
+}:
 let
+  peers = getClientsList;
   machine = machines.archive;
   ageKey = "/key/agenix/keys/archive.agenix";
 
@@ -41,14 +46,7 @@ in
       listenPort = port;
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
 
-      peers = [
-        machine.wireguard.peers.spark
-        {
-          publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
-          allowedIPs = [ "2.2.2.3/32" ];
-          persistentKeepalive = 25;
-        }
-      ];
+      inherit peers;
     };
   };
 }

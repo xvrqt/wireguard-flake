@@ -47,4 +47,12 @@ in
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
   };
+  # Dumb Devices (no secret management)
+  # Amy's Cell Phone
+  third_lobe = {
+    inherit port interface;
+    ip = "2.2.2.3";
+    isServer = false;
+    publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
+  };
 }
