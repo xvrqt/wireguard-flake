@@ -1,10 +1,10 @@
 { config
 , machines
-, getClientsList
+, getClientPeers
 , ...
 }:
 let
-  peers = getClientsList;
+  peers = getClientPeers;
   machine = machines.archive;
   ageKey = "/key/agenix/keys/archive.agenix";
 

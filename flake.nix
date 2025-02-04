@@ -33,8 +33,8 @@
         (key: peersAttrSet.${key})
         (builtins.attrNames peersAttrSet);
       clientsList = map
-        (key: peersAttrSet.${key})
-        (builtins.attrNames peersAttrSet);
+        (key: clientsAttrSet.${key})
+        (builtins.attrNames clientsAttrSet);
       getServerPeers = peersList;
       getClientPeers = clientsList;
     in
