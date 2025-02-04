@@ -1,37 +1,15 @@
-{ lib, pkgs, config, agenix, machines, ... }:
+{ config, machines, getServerPeers, ... }:
 let
   # Where the key that can be used to decrypt the file is located
   ageKey = "/key/agenix/keys/spark.agenix";
 
   # The machine to configure Wireguard for
   machine = machines.spark;
-  # The list of machines to connect to
-  # Since this is a client, only connect to servers
-  servers = lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
-
-  peersAttrSet = builtins.mapAttrs
-    (n: v:
-      let
-        # Make the last octet a '0' 
-        ip = lib.strings.concatStrings [
-          (builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)
-          "0"
-        ];
-      in
-      {
-        endpoint = v.endpoint;
-        publicKey = v.publicKey;
-        allowedIPs = [ "${ip}/24" ];
-      })
-    servers;
-
-  peers = map
-    (key: peersAttrSet.${key})
-    (builtins.attrNames peersAttrSet);
+  # The servers this client connects to
+  peers = getServerPeers;
 
   # Convenience
-  ip =
-    machine.ip;
+  ip = machine.ip;
   port = machine.port;
   interface = machine.interface;
 in

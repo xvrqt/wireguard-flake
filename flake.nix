@@ -7,14 +7,27 @@
     { agenix, ... }:
     let
       machines = import ./machines.nix;
-      # wgConfig = lib: name: isServer:
-      #   let
-      #     # Grab the machine's config
-      #     machine = machines."${name}";
-      #     # Grab all the other machine's configs
-      #     other_machines = lib.attrsets.filterAttrs (n: v: n != name) machines;
-      #   in
-      #   { };
+
+      servers = lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
+      peersAttrSet = builtins.mapAttrs
+        (n: v:
+          let
+            # Make the last octet a '0' 
+            ip = lib.strings.concatStrings [
+              (builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)
+              "0"
+            ];
+          in
+          {
+            endpoint = v.endpoint;
+            publicKey = v.publicKey;
+            allowedIPs = [ "${ip}/24" ];
+          })
+        servers;
+      peersList = map
+        (key: peersAttrSet.${key})
+        (builtins.attrNames peersAttrSet);
+      getServerPeers = peersList;
     in
     {
       nixosModules = {
@@ -33,7 +46,7 @@
         };
         spark = { lib, pkgs, config, ... }: {
           imports = [
-            (import ./spark.nix { inherit lib pkgs config agenix machines; })
+            (import ./spark.nix { inherit config machines getServerPeers; })
           ];
         };
       };
