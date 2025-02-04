@@ -9,6 +9,7 @@
     let
       machines = import ./machines.nix;
 
+      # TODO: Make these functions less wet
       servers = nixpkgs.lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
       clients = nixpkgs.lib.attrsets.filterAttrs (n: v: v.isServer == false) machines;
       peersAttrSet = builtins.mapAttrs
@@ -28,6 +29,7 @@
           {
             publicKey = v.publicKey;
             allowedIPs = [ "${v.ip}/32" ];
+            persistentKeepalive = 25;
           })
         clients;
       peersList = map
