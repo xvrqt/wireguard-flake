@@ -35,7 +35,7 @@ in
     "${interface}" = {
       ips = [ "${ip}/32" ];
       listenPort = port;
-      privateKeyFile = agenix.secrets.wgPrivateKey.path;
+      privateKeyFile = config.age.secrets.wgPrivateKey.path;
 
       peers = [
         {

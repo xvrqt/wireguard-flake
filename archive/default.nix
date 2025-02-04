@@ -39,7 +39,7 @@ in
     "${interface}" = {
       ips = [ "${ip}/24" ];
       listenPort = port;
-      privateKeyFile = agenix.secrets.wgPrivateKey.path;
+      privateKeyFile = config.age.secrets.wgPrivateKey.path;
 
       peers = [
         machine.wireguard.peers.spark
