@@ -8,13 +8,23 @@ let
   # The list of machines to connect to
   # Since this is a client, only connect to servers
   servers = lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
+
   peersAttrSet = builtins.mapAttrs
-    (n: v: {
-      endpoint = v.endpoint;
-      publicKey = v.publicKey;
-      allowedIPs = [ "${v.ip}/24" ];
-    })
+    (n: v:
+      let
+        # Make the last octet a '0' 
+        ip = builtins.concatString [
+          (builtins.substring 0 ((builtins.stringLength v.ip) - 1))
+          "0"
+        ];
+      in
+      {
+        endpoint = v.endpoint;
+        publicKey = v.publicKey;
+        allowedIPs = [ "${ip}/24" ];
+      })
     servers;
+
   peers = map
     (key: peersAttrSet.${key})
     (builtins.attrNames peersAttrSet);
