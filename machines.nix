@@ -41,9 +41,9 @@ in
     ip = "2.2.2.4";
     isServer = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
-    ageKey = "";
+    ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINtHIPfa2+AQGIHZcBRLgkIx+3mhwEt/zf5ClP2AVvZ+ nyaa@machine";
     # Wireguard Public Key
-    publicKey = "";
+    publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
   };
