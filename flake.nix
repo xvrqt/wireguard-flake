@@ -26,8 +26,17 @@
       clientsAttrSet = builtins.mapAttrs
         (n: v: {
           publicKey = v.publicKey;
-          allowedIPs = [ "${v.ip}/32" ];
+          allowedIPs = [ "${v.ip}/24" ];
         })
+        (n: v:
+          let
+            # Make the last octet a '0' 
+            ip = "${(builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)}0";
+          in
+          {
+            publicKey = v.publicKey;
+            allowedIPs = [ "${ip}/24" ];
+          })
         clients;
       peersList = map
         (key: peersAttrSet.${key})
