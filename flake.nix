@@ -22,6 +22,7 @@
             endpoint = v.endpoint;
             publicKey = v.publicKey;
             allowedIPs = [ "${ip}/24" ];
+            persistentKeepalive = 25;
           })
         servers;
       clientsAttrSet = builtins.mapAttrs
