@@ -12,7 +12,7 @@ in
   age.identityPaths = [ ageKey ];
   age.secrets.wgPrivateKey = {
     # The secret file that will be decrypted
-    file = ../secrets/spark.wg.key;
+    file = ./secrets/spark.wg.key;
     # Folder to decrypt into (ocnfig.age.secretDir/'path')
     name = "wg/private.key";
 
