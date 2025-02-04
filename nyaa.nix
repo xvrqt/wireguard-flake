@@ -40,7 +40,7 @@ in
   networking.wireguard.interfaces = {
     # Interface names are arbitrary
     "${interface}" = {
-      ips = [ "${ip}/24" ];
+      ips = [ "${ip}/32" ];
       listenPort = port;
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
       inherit peers;
