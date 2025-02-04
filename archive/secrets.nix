@@ -1,5 +1,5 @@
 let
-  archive = machines.archive;
+  archive = machines.archive.ageKey;
   machines = import ../machines.nix;
 in
 {
