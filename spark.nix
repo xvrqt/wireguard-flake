@@ -1,9 +1,27 @@
 { lib, pkgs, config, agenix, machines, ... }:
 let
-  machine = machines.spark;
+  # Where the key that can be used to decrypt the file is located
   ageKey = "/key/agenix/keys/spark.agenix";
 
-  ip = machine.ip;
+  # The machine to configure Wireguard for
+  machine = machines.spark;
+  # The list of machines to connect to
+  # Since this is a client, only connect to servers
+  servers = lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
+  peersAttrSet = builtins.mapAttrs
+    (n: v: {
+      endpoint = v.endpoint;
+      publicKey = v.publicKey;
+      allowedIPs = "${v.ip}/24";
+    })
+    servers;
+  peers = map
+    (key: peersAttrSet.${key})
+    (builtins.attrNames peersAttrSet);
+
+  # Convenience
+  ip =
+    machine.ip;
   port = machine.port;
   interface = machine.interface;
 in
@@ -30,20 +48,14 @@ in
     allowedUDPPorts = [ port ];
   };
 
+  # Setup the Wireguard Network Interface
   networking.wireguard.interfaces = {
     # Interface names are arbitrary
     "${interface}" = {
       ips = [ "${ip}/32" ];
       listenPort = port;
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
-
-      peers = [
-        {
-          publicKey = machines.archive.publicKey;
-          allowedIPs = [ "2.2.2.0/24" ];
-          endpoint = "gateway.xvrqt.com:16842";
-        }
-      ];
+      inherit peers;
     };
   };
 }
