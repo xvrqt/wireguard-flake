@@ -48,4 +48,11 @@ in
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
   };
+  # Emme's Cell Phone (not managed by this flake)
+  emme_phone = {
+    inherit port interface;
+    ip = "2.2.2.5";
+    isServer = false;
+    publicKey = "4JwWETlM2xeNJLB/a+doIC8SCP4U2qIg+3tcgGbUVWc=";
+  };
 }
