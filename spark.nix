@@ -12,7 +12,7 @@ let
     (n: v: {
       endpoint = v.endpoint;
       publicKey = v.publicKey;
-      allowedIPs = "${v.ip}/24";
+      allowedIPs = [ "${v.ip}/24" ];
     })
     servers;
   peers = map
