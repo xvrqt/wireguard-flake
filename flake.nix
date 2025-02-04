@@ -28,12 +28,12 @@
         # Import the correct machine to configure Wireguard for it
         archive = { lib, pkgs, config, ... }: {
           imports = [
-            (import ./archive { inherit lib pkgs config agenix machines; })
+            (import ./archive.nix { inherit lib pkgs config agenix machines; })
           ];
         };
         spark = { lib, pkgs, config, ... }: {
           imports = [
-            (import ./spark { inherit lib pkgs config agenix machines; })
+            (import ./spark.nix { inherit lib pkgs config agenix machines; })
           ];
         };
       };
