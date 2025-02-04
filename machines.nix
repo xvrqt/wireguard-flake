@@ -35,6 +35,13 @@ in
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
   };
+  # Amy's Cell Phone (not managed by this flake)
+  third_lobe = {
+    inherit port interface;
+    ip = "2.2.2.3";
+    isServer = false;
+    publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
+  };
   # Home Desktop
   nyaa = {
     inherit port interface;
@@ -46,13 +53,5 @@ in
     publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
-  };
-  # Dumb Devices (no secret management)
-  # Amy's Cell Phone
-  third_lobe = {
-    inherit port interface;
-    ip = "2.2.2.3";
-    isServer = false;
-    publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
   };
 }

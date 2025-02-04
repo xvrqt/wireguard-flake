@@ -28,7 +28,7 @@
           publicKey = v.publicKey;
           allowedIPs = [ "${v.ip}/32" ];
         })
-        servers;
+        clients;
       peersList = map
         (key: peersAttrSet.${key})
         (builtins.attrNames peersAttrSet);
