@@ -24,10 +24,6 @@
           })
         servers;
       clientsAttrSet = builtins.mapAttrs
-        (n: v: {
-          publicKey = v.publicKey;
-          allowedIPs = [ "${v.ip}/24" ];
-        })
         (n: v:
           let
             # Make the last octet a '0' 
