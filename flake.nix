@@ -1,22 +1,20 @@
 # This flake collates all my host flakes together for convenienc0
 {
   inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     agenix.url = "github:ryantm/agenix";
   };
   outputs =
-    { agenix, ... }:
+    { nixpkgs, agenix, ... }:
     let
       machines = import ./machines.nix;
 
-      servers = lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
+      servers = nixpkgs.lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
       peersAttrSet = builtins.mapAttrs
         (n: v:
           let
             # Make the last octet a '0' 
-            ip = lib.strings.concatStrings [
-              (builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)
-              "0"
-            ];
+            ip = "${(builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)}0";
           in
           {
             endpoint = v.endpoint;
