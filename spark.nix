@@ -13,7 +13,7 @@ let
     (n: v:
       let
         # Make the last octet a '0' 
-        ip = builtins.concatStrings [
+        ip = lib.strings.concatStrings [
           (builtins.substring 0 ((builtins.stringLength v.ip) - 1))
           "0"
         ];
