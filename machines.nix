@@ -12,7 +12,7 @@ in
     # Wireguard Public Key
     publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
     # Where to find the Wireguard Private Key
-    privateKeyFile = "/key/secrets/wg/archive.key";
+    privateKeyFile = "/key/secrets/wg/private.key";
     peers = {
       spark = {
         publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
@@ -25,10 +25,10 @@ in
     ip = "2.2.2.2";
     isServer = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
-    ageKey = "";
+    ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDnpWeIBR+QCwclhSqSDKTsYCLYPX0b38lYnKPYBEMM spark@machine";
     # Wireguard Public Key
-    publicKey = "";
+    publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
     # Where to find the Wireguard Private Key
-    privateKeyFile = "/key/secrets/wg/spark.key";
+    privateKeyFile = "/key/secrets/wg/private.key";
   };
 }

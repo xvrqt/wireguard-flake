@@ -14,7 +14,7 @@ in
     # The secret file that will be decrypted
     file = ./secrets/archive.wg.key;
     # Folder to decrypt into (ocnfig.age.secretDir/'path')
-    name = "wg/archive.key";
+    name = "wg/private.key";
 
     # File Permissions
     mode = "400";

@@ -38,6 +38,11 @@ in
       privateKeyFile = agenix.secrets.wgPrivateKey.path;
 
       peers = [
+        {
+          publicKey = machines.archive.publicKey;
+          allowedIPs = [ "2.2.2.0/24" ];
+          endpoint = "gateway.xvrqt.com:16842";
+        }
       ];
     };
   };
