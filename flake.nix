@@ -42,9 +42,14 @@
             (import ./archive.nix { inherit lib pkgs config agenix machines; })
           ];
         };
-        spark = { lib, pkgs, config, ... }: {
+        spark = { config, ... }: {
           imports = [
             (import ./spark.nix { inherit config machines getServerPeers; })
+          ];
+        };
+        nyaa = { config, ... }: {
+          imports = [
+            (import ./nyaa.nix { inherit config machines getServerPeers; })
           ];
         };
       };

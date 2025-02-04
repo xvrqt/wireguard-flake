@@ -4,6 +4,7 @@ let
   interface = "irlqt-secured";
 in
 {
+  # Home Server
   archive = {
     inherit port interface;
     ip = "2.2.2.1";
@@ -22,6 +23,7 @@ in
       };
     };
   };
+  # Apple M1 Ashai-Linux Lappy
   spark = {
     inherit port interface;
     ip = "2.2.2.2";
@@ -30,6 +32,18 @@ in
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDnpWeIBR+QCwclhSqSDKTsYCLYPX0b38lYnKPYBEMM spark@machine";
     # Wireguard Public Key
     publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
+    # Where to find the Wireguard Private Key
+    privateKeyFile = "/key/secrets/wg/private.key";
+  };
+  # Home Desktop
+  nyaa = {
+    inherit port interface;
+    ip = "2.2.2.4";
+    isServer = false;
+    # Used to encrypt secrets (i.e. the privateKeyFile)
+    ageKey = "";
+    # Wireguard Public Key
+    publicKey = "";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
   };
