@@ -43,7 +43,20 @@ in
       ips = [ "${ip}/32" ];
       listenPort = port;
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
-      inherit peers;
+      # Since 2.2.2.1 (Archive) and 2.2.2.4 (nyaa; this machine) are both on the
+      # same internal network, we are going to connect directly, skipping DNS
+      # Hack until I can get the internal/external function dynamically
+      peers = [
+        {
+          endpoint = "192.168.1.6:16842";
+          publicKey = machines.archive.publicKey;
+          allowedIPs = [
+            "${machines.archive.ip}/24"
+          ];
+          persistentKeepalive = 25;
+        }
+      ];
     };
   };
 }
+

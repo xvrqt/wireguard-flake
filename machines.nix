@@ -1,6 +1,9 @@
 let
   port = 16842;
-  gateway = "gateway.xvrqt.com";
+  # If the device is on the internal network, address directly
+  internalGateway = "192.168.1.6";
+  # If the device is mobile (e.g. laptops & phones) then resolve via DNS
+  externalGateway = "gateway.irlqt.net";
   interface = "irlqt-secured";
 in
 {
@@ -9,7 +12,8 @@ in
     inherit port interface;
     ip = "2.2.2.1";
     isServer = true;
-    endpoint = "${gateway}:${builtins.toString port}";
+    # TODO: Make the internal variant
+    endpoint = "${externalGateway}:${builtins.toString port}";
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6GH/nzYFaruIZ9ZORbBhYEzTHBnrCZXSJUK2rrs1jL archive@machine";
     # Wireguard Public Key
