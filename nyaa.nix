@@ -51,7 +51,7 @@ in
           endpoint = "192.168.1.6:16842";
           publicKey = machines.archive.publicKey;
           allowedIPs = [
-            "${machines.archive.ip}/24"
+            "2.2.2.0/24"
           ];
           persistentKeepalive = 25;
         }
