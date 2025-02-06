@@ -6,15 +6,12 @@
 let
   peers = getClientPeers;
   machine = machines.archive;
-  ageKey = "/key/agenix/keys/archive.agenix";
 
   ip = machine.ip;
   port = machine.port;
   interface = machine.interface;
 in
 {
-  # Tell Agenix where the key that can decrypt the secrets is located 
-  age.identityPaths = [ ageKey ];
   age.secrets.wgPrivateKey = {
     # The secret file that will be decrypted
     file = ./secrets/archive.wg.key;

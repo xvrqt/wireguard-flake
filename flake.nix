@@ -2,10 +2,10 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    agenix.url = "github:ryantm/agenix";
+    secrets.url = "github:xvrqt/secrets-flake";
   };
   outputs =
-    { nixpkgs, agenix, ... }:
+    { nixpkgs, secrets, ... }:
     let
       machines = import ./machines.nix;
 
@@ -45,10 +45,9 @@
     {
       nixosModules = {
         # Import me first to setup Agenix and common stuff
-        default = { lib, pkgs, ... }: {
+        default = {
           imports = [
-            (import ./common.nix { inherit lib pkgs agenix; })
-            agenix.nixosModules.default
+            secrets.nixosModules.default
           ];
         };
         # Import the correct machine to configure Wireguard for it

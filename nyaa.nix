@@ -1,8 +1,5 @@
 { config, machines, getServerPeers, ... }:
 let
-  # Where the key that can be used to decrypt the file is located
-  ageKey = "/key/agenix/keys/nyaa.agenix";
-
   # The machine to configure Wireguard for
   machine = machines.nyaa;
   # The servers this client connects to
@@ -14,8 +11,6 @@ let
   interface = machine.interface;
 in
 {
-  # Tell Agenix where the key that can decrypt the secrets is located 
-  age.identityPaths = [ ageKey ];
   age.secrets.wgPrivateKey = {
     # The secret file that will be decrypted
     file = ./secrets/nyaa.wg.key;
