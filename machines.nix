@@ -58,5 +58,19 @@ in
     ip = "2.2.2.5";
     isServer = false;
     publicKey = "4JwWETlM2xeNJLB/a+doIC8SCP4U2qIg+3tcgGbUVWc=";
+  };  
+  # Greg Gateway
+  gregnet = {
+    inherit port interface;
+    ip = "10.55.5.1";
+    isServer = true;
+    # TODO: Make the internal variant
+    endpoint = "tartarus.hell.cool:666";
+    # Used to encrypt secrets (i.e. the privateKeyFile)
+    ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6GH/nzYFaruIZ9ZORbBhYEzTHBnrCZXSJUK2rrs1jL archive@machine";
+    # Wireguard Public Key
+    publicKey = "x3VZ92d4Lo8K3Qot9eEBd4PfYQ/XvESLOmyVuqjgi0w=";
+    # Where to find the Wireguard Private Key
+    privateKeyFile = "/key/secrets/wg/private.key";
   };
 }
