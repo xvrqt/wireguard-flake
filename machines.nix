@@ -24,7 +24,7 @@ in
   # Apple M1 Ashai-Linux Lappy
   spark = {
     inherit port interface;
-    ip = "10.1.1.2";
+    ip = "10.55.5.69";
     isServer = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDnpWeIBR+QCwclhSqSDKTsYCLYPX0b38lYnKPYBEMM spark@machine";
