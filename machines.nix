@@ -10,7 +10,7 @@ in
   # Home Server
   archive = {
     inherit port interface;
-    ip = "2.2.2.1";
+    ip = "10.0.0.1";
     isServer = true;
     # TODO: Make the internal variant
     endpoint = "${externalGateway}:${builtins.toString port}";
@@ -24,7 +24,7 @@ in
   # Apple M1 Ashai-Linux Lappy
   spark = {
     inherit port interface;
-    ip = "2.2.2.2";
+    ip = "10.0.0.2";
     isServer = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDnpWeIBR+QCwclhSqSDKTsYCLYPX0b38lYnKPYBEMM spark@machine";
@@ -43,7 +43,7 @@ in
   # Home Desktop
   nyaa = {
     inherit port interface;
-    ip = "2.2.2.4";
+    ip = "10.0.0.4";
     isServer = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINtHIPfa2+AQGIHZcBRLgkIx+3mhwEt/zf5ClP2AVvZ+ nyaa@machine";
@@ -55,7 +55,7 @@ in
   # Emme's Cell Phone (not managed by this flake)
   emme_phone = {
     inherit port interface;
-    ip = "2.2.2.5";
+    ip = "10.0.0.5";
     isServer = false;
     publicKey = "4JwWETlM2xeNJLB/a+doIC8SCP4U2qIg+3tcgGbUVWc=";
   };  
