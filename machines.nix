@@ -36,7 +36,7 @@ in
   # Amy's Cell Phone (not managed by this flake)
   third_lobe = {
     inherit port interface;
-    ip = "2.2.2.3";
+    ip = "10.0.0.3";
     isServer = false;
     publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
   };
