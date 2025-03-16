@@ -35,7 +35,7 @@ in
   networking.wireguard.interfaces = {
     # Interface names are arbitrary
     "${interface}" = {
-      ips = [ "${ip}/32" ];
+      ips = [ "${ip}/9" ];
       listenPort = port;
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
       # Since 2.2.2.1 (Archive) and 2.2.2.4 (nyaa; this machine) are both on the
@@ -46,7 +46,7 @@ in
           endpoint = "192.168.1.6:16842";
           publicKey = machines.archive.publicKey;
           allowedIPs = [
-            "2.2.2.0/24"
+            "10.128.0.0/24"
           ];
           persistentKeepalive = 25;
         }
