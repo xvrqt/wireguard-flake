@@ -65,8 +65,8 @@ in
     ip = "10.129.0.1";
     isServer = true;
     # TODO: Make the internal variant
-    endpoint = "tartarus.hell.cool:666";
+    endpoint = "tartarus.hell.cool:667";
     # Wireguard Public Key
-    publicKey = "x3VZ92d4Lo8K3Qot9eEBd4PfYQ/XvESLOmyVuqjgi0w=";
+    publicKey = "UR+lejpKmgS5UKri4/wA/Q57vfGhhCoCbW3Fk8qqVxA=";
   };
 }
