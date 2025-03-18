@@ -47,8 +47,7 @@ in
       peers = peers ++ [{
         endpoint = "tartarus.hell.cool:667";
         publicKey = "UR+lejpKmgS5UKri4/wA/Q57vfGhhCoCbW3Fk8qqVxA=";
-        # allowedIPs = [ "10.128.0.0/16" "10.129.0.0/16" ];
-        allowedIPs = [ "10.129.0.0/16" ];
+        allowedIPs = [ "10.129.0.1/16" ];
         persistentKeepalive = 25;
       }];
     };
