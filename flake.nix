@@ -16,12 +16,12 @@
         (n: v:
           let
             # Make the last octet a '0' 
-            # ip = "${(builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)}0";
+            ip = "${(builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)}0";
           in
           {
             endpoint = v.endpoint;
             publicKey = v.publicKey;
-            allowedIPs = [ "${ip}/9" ];
+            allowedIPs = [ "10.128.0.0/16" "10.129.0.0/16" ];
             persistentKeepalive = 25;
           })
         servers;
