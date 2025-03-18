@@ -21,7 +21,8 @@
           {
             endpoint = v.endpoint;
             publicKey = v.publicKey;
-            allowedIPs = [ "10.128.0.0/16" "10.129.0.0/16" ];
+            # allowedIPs = [ "10.128.0.0/16" "10.129.0.0/16" ];
+            allowedIPs = [ "${ip}/16" ];
             persistentKeepalive = 25;
           })
         servers;
