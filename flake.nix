@@ -57,7 +57,9 @@
       generatePeerList = name:
         let
           # Filter out the machine from its own Peer list
-          filteredMachines = nixpkgs.lib.attrsets.filterAttrs (n: v: n != name) machines;
+          # If the machine doesn't have an endpoint, filter out all machines without an enpoint
+          filteredMachines = nixpkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
+
           # Convert the Peer attrSet into a list of attrSets
           filteredMachineNames = builtins.attrNames filteredMachines;
           filteredListOfMachines = builtins.map (key: filteredMachines.${key}) filteredMachineNames;
