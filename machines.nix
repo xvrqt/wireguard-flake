@@ -1,20 +1,11 @@
-let
-  port = 16842;
-  # If the device is on the internal network, address directly
-  internalGateway = "192.168.1.6";
-  # If the device is mobile (e.g. laptops & phones) then resolve via DNS
-  externalGateway = "gateway.irlqt.net";
-  interface = "irlqt-secured";
-in
 {
   # Home Server
   archive = {
-    inherit port interface;
     ip = "10.128.0.1/9";
     allowedIPs = [ "10.128.0.0/9" ];
     enableNAT = true;
     # TODO: Make the internal variant
-    endpoint = "${externalGateway}:${builtins.toString port}";
+    endpoint = "gateway.xvrqt.com:16842";
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6GH/nzYFaruIZ9ZORbBhYEzTHBnrCZXSJUK2rrs1jL archive@machine";
     # Wireguard Public Key
@@ -24,7 +15,6 @@ in
   };
   # Apple M1 Ashai-Linux Lappy
   spark = {
-    inherit port interface;
     ip = "10.128.0.2/9";
     allowedIPs = [ "10.128.0.2/32" ];
     enableNAT = false;
@@ -37,7 +27,6 @@ in
   };
   # Amy's Cell Phone (not managed by this flake)
   third_lobe = {
-    inherit port interface;
     ip = "10.128.0.3";
     allowedIPs = [ "10.128.0.3/32" ];
     enableNAT = false;
@@ -45,7 +34,6 @@ in
   };
   # Home Desktop
   nyaa = {
-    inherit port interface;
     ip = "10.128.0.4/9";
     allowedIPs = [ "10.128.0.4/32" ];
     enableNAT = false;
@@ -58,7 +46,6 @@ in
   };
   # Emme's Cell Phone (not managed by this flake)
   emme_phone = {
-    inherit port interface;
     ip = "10.128.0.5/9";
     allowedIPs = [ "10.128.0.5/32" ];
     enableNAT = false;
@@ -66,7 +53,6 @@ in
   };
   # Greg Gateway
   gregnet = {
-    inherit port interface;
     ip = "10.129.0.1/9";
     enableNAT = true;
     allowedIPs = [ "10.129.0.0/16" ];
