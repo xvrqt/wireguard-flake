@@ -7,41 +7,71 @@
   outputs =
     { nixpkgs, secrets, ... }:
     let
+      # Wireguard interface name
+      interface = "dorkweb";
+
+      # List of machines on the dorkweb
       machines = import ./machines.nix;
 
-      # TODO: Make these functions less wet
-      servers = nixpkgs.lib.attrsets.filterAttrs (n: v: v.isServer == true) machines;
-      clients = nixpkgs.lib.attrsets.filterAttrs (n: v: v.isServer == false) machines;
-      peersAttrSet = builtins.mapAttrs
-        (n: v:
-          let
-            # Make the last octet a '0' 
-            ip = "${(builtins.substring 0 ((builtins.stringLength v.ip) - 1) v.ip)}0";
-          in
-          {
-            endpoint = v.endpoint;
-            publicKey = v.publicKey;
-            # allowedIPs = [ "10.128.0.0/16" "10.129.0.0/16" ];
-            allowedIPs = [ "${ip}/16" ];
-            persistentKeepalive = 25;
-          })
-        servers;
-      clientsAttrSet = builtins.mapAttrs
-        (n: v:
-          {
-            publicKey = v.publicKey;
-            allowedIPs = [ "${v.ip}/32" ];
-            persistentKeepalive = 25;
-          })
-        clients;
-      peersList = map
-        (key: peersAttrSet.${key})
-        (builtins.attrNames peersAttrSet);
-      clientsList = map
-        (key: clientsAttrSet.${key})
-        (builtins.attrNames clientsAttrSet);
-      getServerPeers = peersList;
-      getClientPeers = clientsList;
+      # Creates the Nix Config attrSet
+      configureMachine = name: config: machine: {
+        # Configures agenix to decrypt and store the private key on the target machine
+        age.secrets.wgPrivateKey = {
+          # The secret file that will be decrypted
+          file = "./secrets/${name}.wg.key";
+          # Folder to decrypt into (config.age.secretDir/'path')
+          name = "wg/private.key";
+
+          # File Permissions
+          mode = "400";
+          owner = "root";
+
+          # Symlink from the secretDir to the 'path'
+          # Doesn't matter since both are in the same partition
+          symlink = true;
+        };
+        # Open our firewall that allows us to connect
+        networking.firewall = {
+          allowedUDPPorts = [ machine.port ];
+        };
+        # If routing packets for other machines on the network, then NAT must be enabled
+        networking.nat = nixpkgs.lib.mkIf machine.enableNAT {
+          enable = true;
+          externalInterface = "enp0s31f6";
+          internalInterfaces = [ "${interface}" ];
+        };
+        # Setup the Wireguard Network Interface
+        networking.wireguard.interfaces = {
+          # Interface names are arbitrary
+          "${interface}" = {
+            # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture
+            ips = [ "${machine.ip}/9" ];
+            listenPort = machine.port;
+            privateKeyFile = config.age.secrets.wgPrivateKey.path;
+            peers = (generatePeerList name);
+          };
+        };
+
+      };
+
+      # Creates a list of Peer attrSets from the machines.nix list
+      generatePeerList = name:
+        let
+          # Filter out the machine from its own Peer list
+          filteredMachines = nixpkgs.lib.attrsets.filterAttrs (n: v: n != name) machines;
+          # Convert the Peer attrSet into a list of attrSets
+          filteredMachineNames = builtins.attrNames filteredMachines;
+          filteredListOfMachines = builtins.map (key: filteredMachines.${key}) filteredMachineNames;
+        in
+        # Map the machine attrSets into conformant Peer attrSets
+        builtins.map (machine: (createPeerAttrSetFromMachine machine)) filteredListOfMachines;
+      # Converts a machine attrSet into an attrSet that conforms to NixOS Wireguard Peers [{}]
+      createPeerAttrSetFromMachine = machine: {
+        ${if machine?endpoint then "endpoint" else null} = machine.endpoint;
+        publicKey = machine.publicKey;
+        allowedIPs = machine.allowedIPs;
+        persistentKeepalimachinee = 25;
+      };
     in
     {
       nixosModules = {
@@ -51,22 +81,25 @@
             secrets.nixosModules.default
           ];
         };
-        # Import the correct machine to configure Wireguard for it
-        archive = { config, ... }: {
-          imports = [
-            (import ./archive.nix { inherit config machines getClientPeers; })
-          ];
-        };
-        spark = { config, ... }: {
-          imports = [
-            (import ./spark.nix { inherit config machines getServerPeers; })
-          ];
-        };
-        nyaa = { config, ... }: {
-          imports = [
-            (import ./nyaa.nix { inherit config machines getServerPeers; })
-          ];
-        };
+        archive = { config, ... }:
+          let
+            name = "archive";
+            machine = machines.name;
+          in
+          configureMachine name config machine;
+
+        spark = { config, ... }:
+          let
+            name = "spark";
+            machine = machines.name;
+          in
+          configureMachine name config machine;
+        nyaa = { config, ... }:
+          let
+            name = "nyaa";
+            machine = machines.name;
+          in
+          configureMachine name config machine;
       };
     };
 }

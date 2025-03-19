@@ -15,7 +15,7 @@ in
   age.secrets.wgPrivateKey = {
     # The secret file that will be decrypted
     file = ./secrets/archive.wg.key;
-    # Folder to decrypt into (ocnfig.age.secretDir/'path')
+    # Folder to decrypt into (config.age.secretDir/'path')
     name = "wg/private.key";
 
     # File Permissions
