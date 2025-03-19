@@ -2,7 +2,7 @@
   # Home Server
   archive = {
     ip = "10.128.0.1/9";
-    allowedIPs = [ "10.128.0.0/9" ];
+    allowedIPs = [ "10.128.0.0/16" ];
     enableNAT = true;
     # TODO: Make the internal variant
     endpoint = "gateway.xvrqt.com:16842";
