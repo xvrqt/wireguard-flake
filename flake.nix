@@ -1,4 +1,3 @@
-# This flake collates all my host flakes together for convenienc0
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -70,7 +69,7 @@
         ${if machine?endpoint then "endpoint" else null} = machine.endpoint;
         publicKey = machine.publicKey;
         allowedIPs = machine.allowedIPs;
-        persistentKeepalimachinee = 25;
+        persistentKeepalive = 25;
       };
     in
     {
