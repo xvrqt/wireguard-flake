@@ -11,7 +11,7 @@ in
   archive = {
     inherit port interface;
     ip = "10.128.0.1/9";
-    allowedIPs = [ "10.128.0.0/16" ];
+    allowedIPs = [ "10.128.0.0/9" ];
     enableNAT = true;
     # TODO: Make the internal variant
     endpoint = "${externalGateway}:${builtins.toString port}";
