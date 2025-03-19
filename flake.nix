@@ -83,20 +83,20 @@
         archive = { config, ... }:
           let
             name = "archive";
-            machine = machines.name;
+            machine = machines.${name};
           in
           configureMachine name config machine;
 
         spark = { config, ... }:
           let
             name = "spark";
-            machine = machines.name;
+            machine = machines.${name};
           in
           configureMachine name config machine;
         nyaa = { config, ... }:
           let
             name = "nyaa";
-            machine = machines.name;
+            machine = machines.${name};
           in
           configureMachine name config machine;
       };
