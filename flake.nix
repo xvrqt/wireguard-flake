@@ -17,7 +17,7 @@
         # Configures agenix to decrypt and store the private key on the target machine
         age.secrets.wgPrivateKey = {
           # The secret file that will be decrypted
-          file = "./secrets/${name}.wg.key";
+          file = ./secrets + ("/" + "${name}.wg.key");
           # Folder to decrypt into (config.age.secretDir/'path')
           name = "wg/private.key";
 
