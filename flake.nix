@@ -45,7 +45,7 @@
           "${interface}" = {
             # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture
             ips = [ "${machine.ip}" ];
-            listenPort = machine.port;
+            listenPort = 16842;
             privateKeyFile = config.age.secrets.wgPrivateKey.path;
             peers = (generatePeerList name);
           };
