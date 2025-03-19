@@ -27,7 +27,7 @@ in
     inherit port interface;
     ip = "10.128.0.2/9";
     allowedIPS = [ "10.128.0.2/32" ];
-    isServer = false;
+    enableNAT = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDnpWeIBR+QCwclhSqSDKTsYCLYPX0b38lYnKPYBEMM spark@machine";
     # Wireguard Public Key
