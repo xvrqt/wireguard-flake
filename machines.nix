@@ -1,12 +1,13 @@
 {
   # Wireguard Gateway in Helsinki
   lighthouse = {
-    ip = "10.255.0.1/9";
+    ip = "10.255.255.255/9";
     allowedIPs = [ "10.128.0.0/9" ];
     enableNAT = true;
+    listenPort = 1337;
     externalInterface = "eth0";
     # TODO: Make the internal variant
-    endpoint = "135.181.109.173:16842";
+    endpoint = "135.181.109.173:1337";
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIHqtWTbqQE5iTFZiSJ47yTicBsOlIMHqG6ojON/jTcH lighthouse@machine";
     # Wireguard Public Key
@@ -19,6 +20,7 @@
     ip = "10.128.0.1/9";
     allowedIPs = [ "10.128.0.0/16" ];
     enableNAT = true;
+    listenPort = 16842;
     externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
     endpoint = "gateway.xvrqt.com:16842";
@@ -72,6 +74,7 @@
     ip = "10.129.0.1/9";
     enableNAT = true;
     allowedIPs = [ "10.129.0.0/16" ];
+    listenPort = 667;
     # TODO: Make the internal variant
     endpoint = "tartarus.hell.cool:667";
     # Wireguard Public Key

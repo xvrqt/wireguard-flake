@@ -31,7 +31,7 @@
         };
         # Open our firewall that allows us to connect
         networking.firewall = {
-          allowedUDPPorts = [ 16842 667 ];
+          allowedUDPPorts = [ 16842 667 1337 ];
         };
         # If routing packets for other machines on the network, then NAT must be enabled
         networking.nat = nixpkgs.lib.mkIf machine.enableNAT {
@@ -45,7 +45,7 @@
           "${interface}" = {
             # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture
             ips = [ "${machine.ip}" ];
-            listenPort = 16842;
+            listenPort = machine.listenPort;
             privateKeyFile = config.age.secrets.wgPrivateKey.path;
             peers = (generatePeerList name);
           };
