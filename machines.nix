@@ -1,9 +1,25 @@
 {
+  # Wireguard Gateway in Helsinki
+  lighthouse = {
+    ip = "10.255.0.1/9";
+    allowedIPs = [ "10.128.0.0/9" ];
+    enableNAT = true;
+    externalInterface = "eth0";
+    # TODO: Make the internal variant
+    endpoint = "135.181.109.173:16842";
+    # Used to encrypt secrets (i.e. the privateKeyFile)
+    ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIHqtWTbqQE5iTFZiSJ47yTicBsOlIMHqG6ojON/jTcH lighthouse@machine";
+    # Wireguard Public Key
+    publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
+    # Where to find the Wireguard Private Key
+    privateKeyFile = "/key/secrets/wg/private.key";
+  };
   # Home Server
   archive = {
     ip = "10.128.0.1/9";
     allowedIPs = [ "10.128.0.0/16" ];
     enableNAT = true;
+    externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
     endpoint = "gateway.xvrqt.com:16842";
     # Used to encrypt secrets (i.e. the privateKeyFile)

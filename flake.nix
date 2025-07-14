@@ -36,7 +36,7 @@
         # If routing packets for other machines on the network, then NAT must be enabled
         networking.nat = nixpkgs.lib.mkIf machine.enableNAT {
           enable = true;
-          externalInterface = "enp0s31f6";
+          externalInterface = machine.externalInterface;
           internalInterfaces = [ "${interface}" ];
         };
         # Setup the Wireguard Network Interface
@@ -57,7 +57,7 @@
       generatePeerList = name:
         let
           # Filter out the machine from its own Peer list
-          # If the machine doesn't have an endpoint, filter out all machines without an enpoint
+          # If the machine doesn't have an endpoint, filter out all machines without an endpoint
           filteredMachines = nixpkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
 
           # Convert the Peer attrSet into a list of attrSets
@@ -98,6 +98,12 @@
         nyaa = { config, ... }:
           let
             name = "nyaa";
+            machine = machines.${name};
+          in
+          configureMachine name config machine;
+        lighthouse = { config, ... }:
+          let
+            name = "lighthouse";
             machine = machines.${name};
           in
           configureMachine name config machine;
