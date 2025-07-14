@@ -7,7 +7,7 @@
     listenPort = 1337;
     externalInterface = "eth0";
     # TODO: Make the internal variant
-    endpoint = "135.181.109.173:1337";
+    endpoint = "135.181.109.173:16842";
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIHqtWTbqQE5iTFZiSJ47yTicBsOlIMHqG6ojON/jTcH lighthouse@machine";
     # Wireguard Public Key
