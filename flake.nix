@@ -34,11 +34,11 @@
           allowedUDPPorts = [ 16842 667 1337 ];
         };
         # If routing packets for other machines on the network, then NAT must be enabled
-        # networking.nat = nixpkgs.lib.mkIf machine.enableNAT {
-        #   enable = true;
-        #   externalInterface = machine.externalInterface;
-        #   internalInterfaces = [ "${interface}" ];
-        # };
+        networking.nat = nixpkgs.lib.mkIf machine.enableNAT {
+          enable = true;
+          externalInterface = machine.externalInterface;
+          internalInterfaces = [ "${interface}" ];
+        };
         # Setup the Wireguard Network Interface
         networking.wireguard.interfaces = {
           # Interface names are arbitrary
