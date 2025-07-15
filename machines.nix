@@ -16,7 +16,7 @@
   # Home Server
   archive = {
     ip = "10.128.0.1/9";
-    allowedIPs = [ "10.128.0.1/16" ];
+    allowedIPs = [ "10.128.0.0/16" ];
     enableNAT = false;
     listenPort = 16842;
     externalInterface = "enp0s31f6";
