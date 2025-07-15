@@ -111,15 +111,15 @@
       "locked": {
         "lastModified": 1752533854,
         "narHash": "sha256-pVg3xHku/9ViRT8cDHUrYt2otTJHaJmeFjAFnp1ep/k=",
-        "owner": "xvrqt",
-        "repo": "secrets-flake",
+        "ref": "refs/heads/master",
         "rev": "f6200cdfc69f56d15dad63280a24f525040a622c",
-        "type": "github"
+        "revCount": 2,
+        "type": "git",
+        "url": "https://git.irlqt.net/crow/secrets-flake"
       },
       "original": {
-        "owner": "xvrqt",
-        "repo": "secrets-flake",
-        "type": "github"
+        "type": "git",
+        "url": "https://git.irlqt.net/crow/secrets-flake"
       }
     },
     "systems": {
