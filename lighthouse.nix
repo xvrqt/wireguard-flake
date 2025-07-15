@@ -14,7 +14,7 @@ in
 {
   age.secrets.wgPrivateKey = {
     # The secret file that will be decrypted
-    file = ./secrets/archive.wg.key;
+    file = ./secrets/lighthouse.wg.key;
     # Folder to decrypt into (config.age.secretDir/'path')
     name = "wg/private.key";
 
@@ -29,7 +29,7 @@ in
 
   # Servers need to enable NAT
   networking.nat.enable = true;
-  networking.nat.externalInterface = "enp0s31f6";
+  networking.nat.externalInterface = "eth0";
   networking.nat.internalInterfaces = [ "${interface}" ];
   # Open our firewall that allows us to connect
   networking.firewall = {
@@ -43,13 +43,7 @@ in
       listenPort = port;
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
 
-      # inherit peers;
-      peers = peers ++ [{
-        endpoint = "tartarus.hell.cool:667";
-        publicKey = "UR+lejpKmgS5UKri4/wA/Q57vfGhhCoCbW3Fk8qqVxA=";
-        allowedIPs = [ "10.129.0.0/16" ];
-        persistentKeepalive = 25;
-      }];
+      inherit peers;
     };
   };
 }

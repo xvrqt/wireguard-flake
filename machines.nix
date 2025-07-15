@@ -1,19 +1,29 @@
-let
-  port = 16842;
-  # If the device is on the internal network, address directly
-  internalGateway = "192.168.1.6";
-  # If the device is mobile (e.g. laptops & phones) then resolve via DNS
-  externalGateway = "gateway.irlqt.net";
-  interface = "irlqt-secured";
-in
 {
+  # Wireguard Gateway in Helsinki
+  lighthouse = {
+    ip = "10.255.0.0/9";
+    allowedIPs = [ "10.255.0.0/16" ];
+    enableNAT = true;
+    listenPort = 1337;
+    externalInterface = "eth0";
+    # TODO: Make the internal variant
+    endpoint = "135.181.109.173:16842";
+    # Used to encrypt secrets (i.e. the privateKeyFile)
+    ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIHqtWTbqQE5iTFZiSJ47yTicBsOlIMHqG6ojON/jTcH lighthouse@machine";
+    # Wireguard Public Key
+    publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
+    # Where to find the Wireguard Private Key
+    privateKeyFile = "/key/secrets/wg/private.key";
+  };
   # Home Server
   archive = {
-    inherit port interface;
-    ip = "10.128.0.1";
-    isServer = true;
+    ip = "10.128.0.1/9";
+    allowedIPs = [ "10.128.0.0/16" ];
+    enableNAT = true;
+    listenPort = 16842;
+    externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
-    endpoint = "${externalGateway}:${builtins.toString port}";
+    endpoint = "gateway.xvrqt.com:16842";
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6GH/nzYFaruIZ9ZORbBhYEzTHBnrCZXSJUK2rrs1jL archive@machine";
     # Wireguard Public Key
@@ -23,9 +33,9 @@ in
   };
   # Apple M1 Ashai-Linux Lappy
   spark = {
-    inherit port interface;
-    ip = "10.128.0.2";
-    isServer = false;
+    ip = "10.128.0.2/9";
+    allowedIPs = [ "10.128.0.2/32" ];
+    enableNAT = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDnpWeIBR+QCwclhSqSDKTsYCLYPX0b38lYnKPYBEMM spark@machine";
     # Wireguard Public Key
@@ -35,16 +45,16 @@ in
   };
   # Amy's Cell Phone (not managed by this flake)
   third_lobe = {
-    inherit port interface;
     ip = "10.128.0.3";
-    isServer = false;
+    allowedIPs = [ "10.128.0.3/32" ];
+    enableNAT = false;
     publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
   };
   # Home Desktop
   nyaa = {
-    inherit port interface;
-    ip = "10.128.0.4";
-    isServer = false;
+    ip = "10.128.0.4/9";
+    allowedIPs = [ "10.128.0.4/32" ];
+    enableNAT = false;
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINtHIPfa2+AQGIHZcBRLgkIx+3mhwEt/zf5ClP2AVvZ+ nyaa@machine";
     # Wireguard Public Key
@@ -54,16 +64,17 @@ in
   };
   # Emme's Cell Phone (not managed by this flake)
   emme_phone = {
-    inherit port interface;
-    ip = "10.128.0.5";
-    isServer = false;
+    ip = "10.128.0.5/9";
+    allowedIPs = [ "10.128.0.5/32" ];
+    enableNAT = false;
     publicKey = "4JwWETlM2xeNJLB/a+doIC8SCP4U2qIg+3tcgGbUVWc=";
   };
   # Greg Gateway
   gregnet = {
-    inherit port interface;
-    ip = "10.129.0.1";
-    isServer = true;
+    ip = "10.129.0.1/9";
+    enableNAT = true;
+    allowedIPs = [ "10.129.0.0/16" ];
+    listenPort = 667;
     # TODO: Make the internal variant
     endpoint = "tartarus.hell.cool:667";
     # Wireguard Public Key
