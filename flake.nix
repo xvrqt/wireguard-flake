@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    secrets.url = "github:xvrqt/secrets-flake";
+    secrets.url = "git+https://git.irlqt.net/crow/secrets-flake";
   };
   outputs =
     { nixpkgs, secrets, ... }:
