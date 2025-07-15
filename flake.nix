@@ -1,10 +1,9 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     secrets.url = "git+https://git.irlqt.net/crow/secrets-flake";
   };
   outputs =
-    { nixpkgs, secrets, ... }:
+    { secrets, ... }:
     let
       # Wireguard interface name
       interface = "dorkweb";
@@ -34,7 +33,7 @@
           allowedUDPPorts = [ 16842 667 1337 ];
         };
         # If routing packets for other machines on the network, then NAT must be enabled
-        networking.nat = nixpkgs.lib.mkIf machine.enableNAT {
+        networking.nat = pkgs.lib.mkIf machine.enableNAT {
           enable = true;
           externalInterface = machine.externalInterface;
           internalInterfaces = [ "${interface}" ];
@@ -47,20 +46,20 @@
             ips = [ "${machine.ip}" ];
             postSetup = pkgs.lib.mkIf machine.enableNAT "${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.128.0.0/9 -o eth0 -j MASQUERADE";
             postShutdown = pkgs.lib.mkIf machine.enableNAT "${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.128.0.0/9 -o eth0 -j MASQUERADE";
-            listenPort = nixpkgs.lib.mkIf machine.enableNAT 16842;
+            listenPort = pkgs.lib.mkIf machine.enableNAT 16842;
             privateKeyFile = config.age.secrets.wgPrivateKey.path;
-            peers = (generatePeerList name);
+            peers = (generatePeerList pkgs name);
           };
         };
 
       };
 
       # Creates a list of Peer attrSets from the machines.nix list
-      generatePeerList = name:
+      generatePeerList = pkgs: name:
         let
           # Filter out the machine from its own Peer list
           # If the machine doesn't have an endpoint, filter out all machines without an endpoint
-          filteredMachines = nixpkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
+          filteredMachines = pkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
 
           # Convert the Peer attrSet into a list of attrSets
           filteredMachineNames = builtins.attrNames filteredMachines;
