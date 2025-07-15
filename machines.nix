@@ -17,7 +17,7 @@
   archive = {
     ip = "10.128.0.1/9";
     allowedIPs = [ "10.128.0.0/16" ];
-    enableNAT = false;
+    enableNAT = true;
     listenPort = 16842;
     externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
