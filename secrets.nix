@@ -1,7 +1,7 @@
 # Not imported, used by Agenix to encrypt secrets
 let
   # Import our keys from our secrets-flake
-  publicKeys = (builtins.getFlake "github:xvrqt/secrets-flake").publicKeys;
+  publicKeys = (builtins.getFlake "git+https://git.irlqt.net/crow/secrets-flake").publicKeys;
 in
 {
   # Archive's Wireguard private key, only accessible to itself
