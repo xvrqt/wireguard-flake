@@ -1,7 +1,7 @@
 {
   # Wireguard Gateway in Helsinki
   lighthouse = {
-    ip = "10.255.0.0/9";
+    ip = "10.255.0.1/9";
     allowedIPs = [ "10.128.0.0/9" ];
     enableNAT = true;
     listenPort = 1337;
@@ -18,8 +18,8 @@
   # Home Server
   archive = {
     ip = "10.128.0.1/9";
-    allowedIPs = [ "10.128.0.0/16" ];
-    enableNAT = true;
+    allowedIPs = [ "10.128.0.1/32" ];
+    enableNAT = false;
     listenPort = 16842;
     externalInterface = "enp0s31f6";
     # TODO: Make the internal variant

@@ -13,7 +13,7 @@
       machines = import ./machines.nix;
 
       # Creates the Nix Config attrSet
-      configureMachine = name: config: machine: {
+      configureMachine = pkgs: name: config: machine: {
         # Configures agenix to decrypt and store the private key on the target machine
         age.secrets.wgPrivateKey = {
           # The secret file that will be decrypted
@@ -45,6 +45,8 @@
           "${interface}" = {
             # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture
             ips = [ "${machine.ip}" ];
+            postSetup = pkgs.lib.mkIf machine.enableNAT "${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.128.0.0/9 -o eth0 -j MASQUERADE";
+            postShutdown = pkgs.lib.mkIf machine.enableNAT "${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.128.0.0/9 -o eth0 -j MASQUERADE";
             listenPort = nixpkgs.lib.mkIf machine.enableNAT 16842;
             privateKeyFile = config.age.secrets.wgPrivateKey.path;
             peers = (generatePeerList name);
@@ -82,31 +84,31 @@
             secrets.nixosModules.default
           ];
         };
-        archive = { config, ... }:
+        archive = { pkgs, config, ... }:
           let
             name = "archive";
             machine = machines.${name};
           in
-          configureMachine name config machine;
+          configureMachine pkgs name config machine;
 
-        spark = { config, ... }:
+        spark = { pkgs, config, ... }:
           let
             name = "spark";
             machine = machines.${name};
           in
-          configureMachine name config machine;
-        nyaa = { config, ... }:
+          configureMachine pkgs name config machine;
+        nyaa = { pkgs, config, ... }:
           let
             name = "nyaa";
             machine = machines.${name};
           in
-          configureMachine name config machine;
-        lighthouse = { config, ... }:
+          configureMachine pkgs name config machine;
+        lighthouse = { pkgs, config, ... }:
           let
             name = "lighthouse";
             machine = machines.${name};
           in
-          configureMachine name config machine;
+          configureMachine pkgs name config machine;
       };
     };
 }
