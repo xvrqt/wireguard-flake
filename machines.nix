@@ -23,7 +23,7 @@
     listenPort = 16842;
     externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
-    endpoint = "archive.irlqt.net:16842";
+    # endpoint = "archive.irlqt.net:16842";
     # Used to encrypt secrets (i.e. the privateKeyFile)
     ageKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6GH/nzYFaruIZ9ZORbBhYEzTHBnrCZXSJUK2rrs1jL archive@machine";
     # Wireguard Public Key
