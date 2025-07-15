@@ -1,7 +1,7 @@
 {
   # Wireguard Gateway in Helsinki
   lighthouse = {
-    ip = "10.255.255.255/9";
+    ip = "10.128.0.0/9";
     allowedIPs = [ "10.128.0.0/9" ];
     enableNAT = true;
     listenPort = 1337;
