@@ -26,7 +26,7 @@
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
     parents = [ "lighthouse" ];
-    peers = [ "spark" ];
+    peers = [ "spark" "third_lobe" ];
   };
   # Apple M1 Ashai-Linux Lappy
   spark = {
