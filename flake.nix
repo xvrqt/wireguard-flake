@@ -35,6 +35,10 @@
           iptables = "${pkgs.iptables}/bin/iptables";
           is_endpoint = (machines.${name}?endpoint);
           routes_packets = (machines.${name}?isNAT && machines.${name}.isNAT);
+
+          # Commands to route packets if the machine is setup to do that
+          postSetup = pkgs.lib.mkIf routes_packets "${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
         in
         {
           # Decrypt & Deploy the WG Key
@@ -44,30 +48,30 @@
           networking.firewall = pkgs.lib.mkIf is_endpoint {
             allowedUDPPorts = [ endpoint_port ];
           };
+
           # If routing packets for other machines on the network, then NAT must be enabled
           networking.nat = pkgs.lib.mkIf routes_packets {
             enable = true;
             externalInterface = machine.externalInterface;
             internalInterfaces = [ "${interface}" ];
           };
+
           # Setup the Wireguard Network Interface
           networking.wireguard.interfaces = {
             # Interface names are arbitrary
             "${interface}" = {
+              # Routing Table modifications (if the machine routes packets)
+              inherit postSetup postShutdown;
               # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture and route traffic
               ips = [ "${machine.ip}" ];
-              # The key that will be used to encrypt the traffic
+              # Key that is used to encrypt traffic
               privateKeyFile = config.age.secrets.wgPrivateKey.path;
-              # If the machine is an endpoint, set up routing
-              postSetup = pkgs.lib.mkIf routes_packets "${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
-              postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
-              # Open a port and listen on it if we're an endpoint peer
+              # The port we're listening on if we're an endpoint
               listenPort = pkgs.lib.mkIf is_endpoint endpoint_port;
               # A list of peers to connect to, and allow connections to
               peers = (generatePeerList pkgs name);
             };
           };
-
         };
 
       # Creates a list of Peer attrSets from the machines.nix list
