@@ -33,7 +33,7 @@
     publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
-    peers = [ "lighthouse" "gregnet" "spark" ];
+    peers = [ "lighthouse" "gregnet" "archive" ];
   };
   # Amy's Cell Phone (not managed by this flake)
   third_lobe = {
