@@ -7,10 +7,27 @@
     let
       # Wireguard interface name
       interface = "dorkweb";
+      # Which point endpoints should keep open for connection
       endpoint_port = 16842;
 
       # List of machines on the dorkweb
       machines = import ./machines.nix;
+
+      # Decrypts & Deploys the WG Key
+      deploySecret = name: {
+        # The secret file that will be decrypted
+        file = ./secrets + ("/" + "${name}.wg.key");
+        # Folder to decrypt into (config.age.secretDir/'path')
+        name = "wg/private.key";
+
+        # File Permissions
+        mode = "400";
+        owner = "root";
+
+        # Symlink from the secretDir to the 'path'
+        # Doesn't matter since both are in the same partition
+        symlink = true;
+      };
 
       # Creates the Nix Config attrSet
       configureMachine = pkgs: name: config: machine:
@@ -20,22 +37,9 @@
           routes_packets = (machines.${name}?isNAT && machines.${name}.isNAT);
         in
         {
-          # Store the private key
-          # Configures agenix to decrypt and store the private key on the target machine
-          age.secrets.wgPrivateKey = {
-            # The secret file that will be decrypted
-            file = ./secrets + ("/" + "${name}.wg.key");
-            # Folder to decrypt into (config.age.secretDir/'path')
-            name = "wg/private.key";
+          # Decrypt & Deploy the WG Key
+          age.secrets.wgPrivateKey = deploySecret name;
 
-            # File Permissions
-            mode = "400";
-            owner = "root";
-
-            # Symlink from the secretDir to the 'path'
-            # Doesn't matter since both are in the same partition
-            symlink = true;
-          };
           # Open our firewall that allows us to connect (if we're an endpoint)
           networking.firewall = pkgs.lib.mkIf is_endpoint {
             allowedUDPPorts = [ endpoint_port ];
