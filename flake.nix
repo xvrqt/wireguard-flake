@@ -44,7 +44,7 @@
         };
 
       # Creates a list of Peer attrSets from the current machine's peer list
-      generatePeerList = name: is_endpoint: is_parent:
+      generatePeerList = name: is_endpoint:
         let
           peers = machines.${name}.peers;
           parents = machines.${name}.parents;
@@ -53,7 +53,7 @@
           listOfParentsAttrSets = builtins.map (key: machines.${key}) parents;
         in
         # Create the parent and peer attrsets and merge them
-        throw ((builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint false)) listOfPeersAttrSets) ++
+        ((builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint false)) listOfPeersAttrSets) ++
           (builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint true)) listOfParentsAttrSets));
 
 
