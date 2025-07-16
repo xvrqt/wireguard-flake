@@ -36,6 +36,7 @@
         allowedIPs = machine.allowedIPs;
         persistentKeepalive = 25;
       };
+
       # Creates a list of Peer attrSets from the current machine's peer list
       generatePeerList = name:
         let
@@ -85,7 +86,7 @@
               # The port we're listening on if we're an endpoint
               listenPort = pkgs.lib.mkIf is_endpoint endpoint_port;
               # A list of peers to connect to, and allow connections to
-              peers = (generatePeerList pkgs name);
+              peers = (generatePeerList name);
             };
           };
         };
