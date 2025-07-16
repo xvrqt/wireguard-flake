@@ -79,11 +79,14 @@
         let
           # Filter out the machine from its own Peer list
           # If the machine doesn't have an endpoint, filter out all machines without an endpoint
-          filteredMachines = pkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
+          # filteredMachines = pkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
+
+          # A list of machines based on what's in the peers list of the current machine
+          filteredListOfMachines = builtins.map (key: machines.${key}) machines.${name}.peers;
 
           # Convert the Peer attrSet into a list of attrSets
-          filteredMachineNames = builtins.attrNames filteredMachines;
-          filteredListOfMachines = builtins.map (key: filteredMachines.${key}) filteredMachineNames;
+          # filteredMachineNames = builtins.attrNames filteredMachines;
+          # filteredListOfMachines = builtins.map (key: filteredMachines.${key}) filteredMachineNames;
         in
         # Map the machine attrSets into conformant Peer attrSets
         builtins.map (machine: (createPeerAttrSetFromMachine machine)) filteredListOfMachines;
