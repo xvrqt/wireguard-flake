@@ -53,6 +53,8 @@
     publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+    parents = [ "lighthouse" "archive" "gregnet" ];
+    peers = [ ];
   };
   # Emme's Cell Phone (not managed by this flake)
   emme_phone = {
