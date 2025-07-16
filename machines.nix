@@ -18,7 +18,7 @@
     allowedIPs = [ "10.128.0.0/16" ];
     externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
-    # endpoint = "archive.irlqt.net:16842";
+    endpoint = "archive.irlqt.net:16842";
     # Wireguard Public Key
     publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
     # Where to find the Wireguard Private Key
