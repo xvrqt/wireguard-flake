@@ -30,12 +30,11 @@
       };
 
       # Generates a peer configuration from a machine attrset
-      createPeerAttrSetFromMachine = machine: is_endpoint:
+      createPeerAttrSetFromMachine = machine: is_endpoint: is_parent:
         let
           # If the machine is endpoint, add it's endpoint
-          # WARN Unless the caller is also an endpoint
-          # cfg_endpoint = machine?endpoint && !is_endpoint;
-          cfg_endpoint = machine?endpoint;
+          # WARN Unless the caller is also an endpoint but is not a parent
+          cfg_endpoint = machine?endpoint && (!is_endpoint || is_parent);
         in
         {
           ${if cfg_endpoint then "endpoint" else null} = machine.endpoint;
@@ -45,13 +44,19 @@
         };
 
       # Creates a list of Peer attrSets from the current machine's peer list
-      generatePeerList = name: is_endpoint:
+      generatePeerList = name: is_endpoint: is_parent:
         let
+          peers = machines.${name}.peers;
+          parents = machines.${name}.parents;
           # A list of machines based on what's in the peers list of the current machine
-          filteredListOfMachines = builtins.map (key: machines.${key}) machines.${name}.peers;
+          listOfPeersAttrSets = builtins.map (key: machines.${key}) peers;
+          listOfParentsAttrSets = builtins.map (key: machines.${key}) parents;
         in
-        # Map the machine attrSets into conformant Peer attrSets
-        builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint)) filteredListOfMachines;
+        # Create the parent and peer attrsets and merge them
+        (builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint false)) listOfPeersAttrSets ++
+          builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint true)) listOfParentsAttrSets);
+
+
 
       # Creates the Nix Config attrSet
       configureMachine = pkgs: name: config: machine:

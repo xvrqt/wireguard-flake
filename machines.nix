@@ -11,6 +11,7 @@
     publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+    parents = [ ];
     peers = [ "spark" "archive" "third_lobe" ];
   };
   # Home Server
@@ -24,7 +25,8 @@
     publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
-    peers = [ "spark" "lighthouse" ];
+    parents = [ "lighthouse" ];
+    peers = [ "spark" ];
   };
   # Apple M1 Ashai-Linux Lappy
   spark = {
@@ -34,7 +36,8 @@
     publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
-    peers = [ "lighthouse" "gregnet" "archive" ];
+    parents = [ "lighthouse" "archive" "gregnet" ];
+    peers = [ ];
   };
   # Amy's Cell Phone (not managed by this flake)
   third_lobe = {
