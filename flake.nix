@@ -34,7 +34,8 @@
         let
           # If the machine is endpoint, add it's endpoint
           # WARN Unless the caller is also an endpoint
-          cfg_endpoint = machine?endpoint && !is_endpoint;
+          # cfg_endpoint = machine?endpoint && !is_endpoint;
+          cfg_endpoint = machine?endpoint;
         in
         {
           ${if cfg_endpoint then "endpoint" else null} = machine.endpoint;
