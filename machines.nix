@@ -11,6 +11,7 @@
     publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+    peers = [ "spark" "archive" "third_lobe" ];
   };
   # Home Server
   archive = {

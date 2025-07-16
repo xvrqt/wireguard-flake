@@ -30,21 +30,27 @@
       };
 
       # Generates a peer configuration from a machine attrset
-      createPeerAttrSetFromMachine = machine: {
-        ${if machine?endpoint then "endpoint" else null} = machine.endpoint;
-        publicKey = machine.publicKey;
-        allowedIPs = machine.allowedIPs;
-        persistentKeepalive = 25;
-      };
+      createPeerAttrSetFromMachine = machine: is_endpoint:
+        let
+          # If the machine is endpoint, add it's endpoint
+          # WARN Unless the caller is also an endpoint
+          cfg_endpoint = machine?endpoint && !is_endpoint;
+        in
+        {
+          ${if cfg_endpoint then "endpoint" else null} = machine.endpoint;
+          publicKey = machine.publicKey;
+          allowedIPs = machine.allowedIPs;
+          persistentKeepalive = 25;
+        };
 
       # Creates a list of Peer attrSets from the current machine's peer list
-      generatePeerList = name:
+      generatePeerList = name: is_endpoint:
         let
           # A list of machines based on what's in the peers list of the current machine
           filteredListOfMachines = builtins.map (key: machines.${key}) machines.${name}.peers;
         in
         # Map the machine attrSets into conformant Peer attrSets
-        builtins.map (machine: (createPeerAttrSetFromMachine machine)) filteredListOfMachines;
+        builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint)) filteredListOfMachines;
 
       # Creates the Nix Config attrSet
       configureMachine = pkgs: name: config: machine:
@@ -86,7 +92,7 @@
               # The port we're listening on if we're an endpoint
               listenPort = pkgs.lib.mkIf is_endpoint endpoint_port;
               # A list of peers to connect to, and allow connections to
-              peers = (generatePeerList name);
+              peers = (generatePeerList name is_endpoint);
             };
           };
         };
