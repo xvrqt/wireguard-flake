@@ -7,52 +7,64 @@
     let
       # Wireguard interface name
       interface = "dorkweb";
+      endpoint_port = 16842;
 
       # List of machines on the dorkweb
       machines = import ./machines.nix;
 
       # Creates the Nix Config attrSet
-      configureMachine = pkgs: name: config: machine: {
-        # Configures agenix to decrypt and store the private key on the target machine
-        age.secrets.wgPrivateKey = {
-          # The secret file that will be decrypted
-          file = ./secrets + ("/" + "${name}.wg.key");
-          # Folder to decrypt into (config.age.secretDir/'path')
-          name = "wg/private.key";
+      configureMachine = pkgs: name: config: machine:
+        let
+          iptables = "${pkgs.iptables}/bin/iptables";
+          is_endpoint = (machines.${name}?endpoint);
+          routes_packets = (machines.${name}?isNAT && machines.${name}.isNAT);
+        in
+        {
+          # Store the private key
+          # Configures agenix to decrypt and store the private key on the target machine
+          age.secrets.wgPrivateKey = {
+            # The secret file that will be decrypted
+            file = ./secrets + ("/" + "${name}.wg.key");
+            # Folder to decrypt into (config.age.secretDir/'path')
+            name = "wg/private.key";
 
-          # File Permissions
-          mode = "400";
-          owner = "root";
+            # File Permissions
+            mode = "400";
+            owner = "root";
 
-          # Symlink from the secretDir to the 'path'
-          # Doesn't matter since both are in the same partition
-          symlink = true;
-        };
-        # Open our firewall that allows us to connect
-        networking.firewall = {
-          allowedUDPPorts = [ 16842 667 1337 ];
-        };
-        # If routing packets for other machines on the network, then NAT must be enabled
-        networking.nat = pkgs.lib.mkIf machine.enableNAT {
-          enable = true;
-          externalInterface = machine.externalInterface;
-          internalInterfaces = [ "${interface}" ];
-        };
-        # Setup the Wireguard Network Interface
-        networking.wireguard.interfaces = {
-          # Interface names are arbitrary
-          "${interface}" = {
-            # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture
-            ips = [ "${machine.ip}" ];
-            postSetup = pkgs.lib.mkIf machine.enableNAT "${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.128.0.0/9 -o eth0 -j MASQUERADE";
-            postShutdown = pkgs.lib.mkIf machine.enableNAT "${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.128.0.0/9 -o eth0 -j MASQUERADE";
-            listenPort = pkgs.lib.mkIf machine.enableNAT 16842;
-            privateKeyFile = config.age.secrets.wgPrivateKey.path;
-            peers = (generatePeerList pkgs name);
+            # Symlink from the secretDir to the 'path'
+            # Doesn't matter since both are in the same partition
+            symlink = true;
           };
-        };
+          # Open our firewall that allows us to connect (if we're an endpoint)
+          networking.firewall = pkgs.lib.mkIf is_endpoint {
+            allowedUDPPorts = [ endpoint_port ];
+          };
+          # If routing packets for other machines on the network, then NAT must be enabled
+          networking.nat = pkgs.lib.mkIf routes_packets {
+            enable = true;
+            externalInterface = machine.externalInterface;
+            internalInterfaces = [ "${interface}" ];
+          };
+          # Setup the Wireguard Network Interface
+          networking.wireguard.interfaces = {
+            # Interface names are arbitrary
+            "${interface}" = {
+              # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture and route traffic
+              ips = [ "${machine.ip}" ];
+              # The key that will be used to encrypt the traffic
+              privateKeyFile = config.age.secrets.wgPrivateKey.path;
+              # If the machine is an endpoint, set up routing
+              postSetup = pkgs.lib.mkIf routes_packets "${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+              postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+              # Open a port and listen on it if we're an endpoint peer
+              listenPort = pkgs.lib.mkIf is_endpoint endpoint_port;
+              # A list of peers to connect to, and allow connections to
+              peers = (generatePeerList pkgs name);
+            };
+          };
 
-      };
+        };
 
       # Creates a list of Peer attrSets from the machines.nix list
       generatePeerList = pkgs: name:
