@@ -53,8 +53,8 @@
           listOfParentsAttrSets = builtins.map (key: machines.${key}) parents;
         in
         # Create the parent and peer attrsets and merge them
-        (builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint false)) listOfPeersAttrSets ++
-          builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint true)) listOfParentsAttrSets);
+        ((builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint false)) listOfPeersAttrSets) ++
+          (builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint true)) listOfParentsAttrSets));
 
 
 
