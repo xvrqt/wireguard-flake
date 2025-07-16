@@ -29,6 +29,22 @@
         symlink = true;
       };
 
+      # Generates a peer configuration from a machine attrset
+      createPeerAttrSetFromMachine = machine: {
+        ${if machine?endpoint then "endpoint" else null} = machine.endpoint;
+        publicKey = machine.publicKey;
+        allowedIPs = machine.allowedIPs;
+        persistentKeepalive = 25;
+      };
+      # Creates a list of Peer attrSets from the current machine's peer list
+      generatePeerList = name:
+        let
+          # A list of machines based on what's in the peers list of the current machine
+          filteredListOfMachines = builtins.map (key: machines.${key}) machines.${name}.peers;
+        in
+        # Map the machine attrSets into conformant Peer attrSets
+        builtins.map (machine: (createPeerAttrSetFromMachine machine)) filteredListOfMachines;
+
       # Creates the Nix Config attrSet
       configureMachine = pkgs: name: config: machine:
         let
@@ -74,29 +90,6 @@
           };
         };
 
-      # Creates a list of Peer attrSets from the machines.nix list
-      generatePeerList = pkgs: name:
-        let
-          # Filter out the machine from its own Peer list
-          # If the machine doesn't have an endpoint, filter out all machines without an endpoint
-          # filteredMachines = pkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
-
-          # A list of machines based on what's in the peers list of the current machine
-          filteredListOfMachines = builtins.map (key: machines.${key}) machines.${name}.peers;
-
-          # Convert the Peer attrSet into a list of attrSets
-          # filteredMachineNames = builtins.attrNames filteredMachines;
-          # filteredListOfMachines = builtins.map (key: filteredMachines.${key}) filteredMachineNames;
-        in
-        # Map the machine attrSets into conformant Peer attrSets
-        builtins.map (machine: (createPeerAttrSetFromMachine machine)) filteredListOfMachines;
-      # Converts a machine attrSet into an attrSet that conforms to NixOS Wireguard Peers [{}]
-      createPeerAttrSetFromMachine = machine: {
-        ${if machine?endpoint then "endpoint" else null} = machine.endpoint;
-        publicKey = machine.publicKey;
-        allowedIPs = machine.allowedIPs;
-        persistentKeepalive = 25;
-      };
     in
     {
       nixosModules = {

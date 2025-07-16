@@ -23,6 +23,7 @@
     publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+    peers = [ "spark" "lighthouse" ];
   };
   # Apple M1 Ashai-Linux Lappy
   spark = {
