@@ -3,7 +3,7 @@
   lighthouse = {
     ip = "10.255.0.1/9";
     allowedIPs = [ "10.128.0.0/9" ];
-    enableNAT = true;
+    # enableNAT = true;
     externalInterface = "eth0";
     # TODO: Make the internal variant
     endpoint = "135.181.109.173:16842";
