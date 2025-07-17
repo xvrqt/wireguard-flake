@@ -18,6 +18,7 @@
   archive = {
     ip = "10.128.0.1/9";
     allowedIPs = [ "10.128.0.0/16" ];
+    enableNAT = true;
     externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
     endpoint = "archive.irlqt.net:16842";
