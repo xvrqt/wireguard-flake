@@ -1,78 +1,110 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     secrets.url = "git+https://git.irlqt.net/crow/secrets-flake";
   };
   outputs =
-    { nixpkgs, secrets, ... }:
+    { secrets, ... }:
     let
       # Wireguard interface name
       interface = "dorkweb";
+      # Which point endpoints should keep open for connection
+      endpoint_port = 16842;
 
       # List of machines on the dorkweb
       machines = import ./machines.nix;
 
+      # Decrypts & Deploys the WG Key
+      deploySecret = name: {
+        # The secret file that will be decrypted
+        file = ./secrets + ("/" + "${name}.wg.key");
+        # Folder to decrypt into (config.age.secretDir/'path')
+        name = "wg/private.key";
+
+        # File Permissions
+        mode = "400";
+        owner = "root";
+
+        # Symlink from the secretDir to the 'path'
+        # Doesn't matter since both are in the same partition
+        symlink = true;
+      };
+
+      # Generates a peer configuration from a machine attrset
+      createPeerAttrSetFromMachine = machine: is_endpoint: is_parent:
+        let
+          # If the machine is endpoint, add it's endpoint
+          # WARN Unless the caller is also an endpoint but is not a parent
+          cfg_endpoint = machine?endpoint && (!is_endpoint || is_parent);
+        in
+        {
+          ${if cfg_endpoint then "endpoint" else null} = machine.endpoint;
+          publicKey = machine.publicKey;
+          allowedIPs = machine.allowedIPs;
+          persistentKeepalive = 25;
+        };
+
+      # Creates a list of Peer attrSets from the current machine's peer list
+      generatePeerList = name: is_endpoint:
+        let
+          peers = machines.${name}.peers;
+          parents = machines.${name}.parents;
+          # A list of machines based on what's in the peers list of the current machine
+          listOfPeersAttrSets = builtins.map (key: machines.${key}) peers;
+          listOfParentsAttrSets = builtins.map (key: machines.${key}) parents;
+        in
+        # Create the parent and peer attrsets and merge them
+        ((builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint false)) listOfPeersAttrSets) ++
+          (builtins.map (machine: (createPeerAttrSetFromMachine machine is_endpoint true)) listOfParentsAttrSets));
+
+
+
       # Creates the Nix Config attrSet
-      configureMachine = name: config: machine: {
-        # Configures agenix to decrypt and store the private key on the target machine
-        age.secrets.wgPrivateKey = {
-          # The secret file that will be decrypted
-          file = ./secrets + ("/" + "${name}.wg.key");
-          # Folder to decrypt into (config.age.secretDir/'path')
-          name = "wg/private.key";
+      configureMachine = pkgs: name: config: machine:
+        let
+          iptables = "${pkgs.iptables}/bin/iptables";
+          is_endpoint = (machines.${name}?endpoint);
+          routes_packets = (machines.${name}?isNAT && machines.${name}.isNAT);
 
-          # File Permissions
-          mode = "400";
-          owner = "root";
+          # Commands to route packets if the machine is setup to do that
+          postSetup = pkgs.lib.mkIf routes_packets "${iptables} -A FORWARD -i ${interface} -j ACCEPT; ${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -D FORWARD -i ${interface} -j ACCEPT; ${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          # postSetup = pkgs.lib.mkIf routes_packets "${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          # postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+        in
+        {
+          # Decrypt & Deploy the WG Key
+          age.secrets.wgPrivateKey = deploySecret name;
 
-          # Symlink from the secretDir to the 'path'
-          # Doesn't matter since both are in the same partition
-          symlink = true;
-        };
-        # Open our firewall that allows us to connect
-        networking.firewall = {
-          allowedUDPPorts = [ 16842 667 1337 ];
-        };
-        # If routing packets for other machines on the network, then NAT must be enabled
-        networking.nat = nixpkgs.lib.mkIf machine.enableNAT {
-          enable = true;
-          externalInterface = machine.externalInterface;
-          internalInterfaces = [ "${interface}" ];
-        };
-        # Setup the Wireguard Network Interface
-        networking.wireguard.interfaces = {
-          # Interface names are arbitrary
-          "${interface}" = {
-            # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture
-            ips = [ "${machine.ip}" ];
-            listenPort = nixpkgs.lib.mkIf machine.enableNAT 16842;
-            privateKeyFile = config.age.secrets.wgPrivateKey.path;
-            peers = (generatePeerList name);
+          # Open our firewall that allows us to connect (if we're an endpoint)
+          networking.firewall = pkgs.lib.mkIf is_endpoint {
+            allowedUDPPorts = [ endpoint_port ];
+          };
+
+          # If routing packets for other machines on the network, then NAT must be enabled
+          networking.nat = pkgs.lib.mkIf routes_packets {
+            enable = true;
+            externalInterface = machine.externalInterface;
+            internalInterfaces = [ "${interface}" ];
+          };
+
+          # Setup the Wireguard Network Interface
+          networking.wireguard.interfaces = {
+            # Interface names are arbitrary
+            "${interface}" = {
+              # Routing Table modifications (if the machine routes packets)
+              inherit postSetup postShutdown;
+              # The machine's IP and the subnet (10.128.X.X/9) which the interface will capture and route traffic
+              ips = [ "${machine.ip}" ];
+              # Key that is used to encrypt traffic
+              privateKeyFile = config.age.secrets.wgPrivateKey.path;
+              # The port we're listening on if we're an endpoint
+              listenPort = pkgs.lib.mkIf is_endpoint endpoint_port;
+              # A list of peers to connect to, and allow connections to
+              peers = (generatePeerList name is_endpoint);
+            };
           };
         };
 
-      };
-
-      # Creates a list of Peer attrSets from the machines.nix list
-      generatePeerList = name:
-        let
-          # Filter out the machine from its own Peer list
-          # If the machine doesn't have an endpoint, filter out all machines without an endpoint
-          filteredMachines = nixpkgs.lib.attrsets.filterAttrs (n: v: (n != name) && (v?endpoint || machines.${name}?endpoint)) machines;
-
-          # Convert the Peer attrSet into a list of attrSets
-          filteredMachineNames = builtins.attrNames filteredMachines;
-          filteredListOfMachines = builtins.map (key: filteredMachines.${key}) filteredMachineNames;
-        in
-        # Map the machine attrSets into conformant Peer attrSets
-        builtins.map (machine: (createPeerAttrSetFromMachine machine)) filteredListOfMachines;
-      # Converts a machine attrSet into an attrSet that conforms to NixOS Wireguard Peers [{}]
-      createPeerAttrSetFromMachine = machine: {
-        ${if machine?endpoint then "endpoint" else null} = machine.endpoint;
-        publicKey = machine.publicKey;
-        allowedIPs = machine.allowedIPs;
-        persistentKeepalive = 25;
-      };
     in
     {
       nixosModules = {
@@ -82,31 +114,31 @@
             secrets.nixosModules.default
           ];
         };
-        archive = { config, ... }:
+        archive = { pkgs, config, ... }:
           let
             name = "archive";
             machine = machines.${name};
           in
-          configureMachine name config machine;
+          configureMachine pkgs name config machine;
 
-        spark = { config, ... }:
+        spark = { pkgs, config, ... }:
           let
             name = "spark";
             machine = machines.${name};
           in
-          configureMachine name config machine;
-        nyaa = { config, ... }:
+          configureMachine pkgs name config machine;
+        nyaa = { pkgs, config, ... }:
           let
             name = "nyaa";
             machine = machines.${name};
           in
-          configureMachine name config machine;
-        lighthouse = { config, ... }:
+          configureMachine pkgs name config machine;
+        lighthouse = { pkgs, config, ... }:
           let
             name = "lighthouse";
             machine = machines.${name};
           in
-          configureMachine name config machine;
+          configureMachine pkgs name config machine;
       };
     };
 }
