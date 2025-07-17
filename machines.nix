@@ -12,21 +12,21 @@
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
     parents = [ ];
-    peers = [ "spark" "archive" "third_lobe" ];
+    peers = [ "spark" "archive" "third_lobe" "gregnet" ];
   };
   # Home Server
   archive = {
     ip = "10.128.0.1/9";
-    allowedIPs = [ "10.128.0.0/16" ];
-    enableNAT = true;
+    allowedIPs = [ "10.128.0.1/32" ];
+    # enableNAT = true;
     externalInterface = "enp0s31f6";
     # TODO: Make the internal variant
-    endpoint = "archive.irlqt.net:16842";
+    # endpoint = "archive.irlqt.net:16842";
     # Wireguard Public Key
     publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
-    parents = [ "lighthouse" ];
+    parents = [ "lighthouse" "gregnet" ];
     peers = [ ];
   };
   # Apple M1 Ashai-Linux Lappy
