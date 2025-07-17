@@ -66,8 +66,10 @@
           routes_packets = (machines.${name}?isNAT && machines.${name}.isNAT);
 
           # Commands to route packets if the machine is setup to do that
-          postSetup = pkgs.lib.mkIf routes_packets "${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
-          postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          postSetup = pkgs.lib.mkIf routes_packets "${iptables} -A FORWARD -i ${interface} -j ACCEPT; ${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -D FORWARD -i ${interface} -j ACCEPT; ${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          # postSetup = pkgs.lib.mkIf routes_packets "${iptables} -t nat -A POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
+          # postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -t nat -D POSTROUTING -s ${(builtins.elemAt machine.allowedIPs 0)} -o ${machine.externalInterface} -j MASQUERADE";
         in
         {
           # Decrypt & Deploy the WG Key
