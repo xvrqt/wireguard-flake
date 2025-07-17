@@ -26,7 +26,7 @@
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
     parents = [ "lighthouse" ];
-    peers = [ "spark" ];
+    peers = [ ];
   };
   # Apple M1 Ashai-Linux Lappy
   spark = {
@@ -36,7 +36,7 @@
     publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
     # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
-    parents = [ "lighthouse" "archive" "gregnet" ];
+    parents = [ "lighthouse" "gregnet" ];
     peers = [ ];
   };
   # Amy's Cell Phone (not managed by this flake)
