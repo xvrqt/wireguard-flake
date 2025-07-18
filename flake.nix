@@ -88,6 +88,12 @@
             internalInterfaces = [ "${interface}" ];
           };
 
+          # Set the device up to route packets
+          # TODO This is wrong
+          boot.kernel.sysctl = pkgs.lib.mkIf is_endpoint {
+            "net.ipv4.ip_forward" = 1;
+          };
+
           # Setup the Wireguard Network Interface
           networking.wireguard.interfaces = {
             # Interface names are arbitrary
