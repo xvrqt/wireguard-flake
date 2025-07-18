@@ -61,16 +61,15 @@
       # Creates the Nix Config attrSet
       configureMachine = pkgs: name: config: machine:
         let
+          thisMachine = machines.${name};
+          is_endpoint = (thisMachine?endpoint);
+          routesTraffic = (thisMachine?routesTraffic && thisMachine.routesTraffic);
+
           iptables = "${pkgs.iptables}/bin/iptables";
-          is_endpoint = (machines.${name}?endpoint);
-          routes_packets = (machines.${name}?isNAT && machines.${name}.isNAT);
 
           # Commands to route packets if the machine is setup to do that
-          postSetup = pkgs.lib.mkIf routes_packets "${iptables} -A FORWARD -i ${interface} -o ${interface} -j ACCEPT;${iptables} -t nat -A POSTROUTING -s 10.128.0.0/9 -o ${machine.externalInterface} -j MASQUERADE";
-          postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -D FORWARD -i ${interface} -o ${interface} -j ACCEPT;${iptables} -t nat -D POSTROUTING -s 10.128.0.0/9 -o ${machine.externalInterface} -j MASQUERADE";
-
-          # postSetup = pkgs.lib.mkIf routes_packets "${iptables} -t nat -A POSTROUTING -s 10.128.0.0/9 -o ${machine.externalInterface} -j MASQUERADE";
-          # postShutdown = pkgs.lib.mkIf routes_packets "${iptables} -t nat -D POSTROUTING -s 10.128.0.0/9 -o ${machine.externalInterface} -j MASQUERADE";
+          postSetup = pkgs.lib.mkIf routesTraffic "${iptables} -A FORWARD -i ${interface} -o ${interface} -j ACCEPT;";
+          postShutdown = pkgs.lib.mkIf routesTraffic "${iptables} -D FORWARD -i ${interface} -o ${interface} -j ACCEPT;";
         in
         {
           # Decrypt & Deploy the WG Key
@@ -81,16 +80,8 @@
             allowedUDPPorts = [ endpoint_port ];
           };
 
-          # If routing packets for other machines on the network, then NAT must be enabled
-          networking.nat = pkgs.lib.mkIf routes_packets {
-            enable = true;
-            externalInterface = machine.externalInterface;
-            internalInterfaces = [ "${interface}" ];
-          };
-
-          # Set the device up to route packets
-          # TODO This is wrong
-          boot.kernel.sysctl = pkgs.lib.mkIf is_endpoint {
+          # Enable packet forwarding in the kernel
+          boot.kernel.sysctl = pkgs.lib.mkIf routesTraffic {
             "net.ipv4.ip_forward" = 1;
           };
 

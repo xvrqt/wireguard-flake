@@ -3,14 +3,12 @@
   lighthouse = {
     ip = "10.255.0.1/9";
     allowedIPs = [ "10.128.0.0/9" ];
-    # enableNAT = true;
-    externalInterface = "eth0";
-    # TODO: Make the internal variant
     endpoint = "135.181.109.173:16842";
-    # Wireguard Public Key
     publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
-    # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+
+    # This server will need to pass packets on to another server
+    routesTraffic = true;
     parents = [ ];
     peers = [ "spark" "archive" "third_lobe" "gregnet" ];
   };
@@ -18,14 +16,10 @@
   archive = {
     ip = "10.128.0.1/9";
     allowedIPs = [ "10.128.0.1/32" ];
-    # enableNAT = true;
-    externalInterface = "enp0s31f6";
-    # TODO: Make the internal variant
     # endpoint = "archive.irlqt.net:16842";
-    # Wireguard Public Key
     publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
-    # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+
     parents = [ "lighthouse" "gregnet" ];
     peers = [ ];
   };
@@ -33,10 +27,9 @@
   spark = {
     ip = "10.128.0.2/9";
     allowedIPs = [ "10.128.0.2/32" ];
-    # Wireguard Public Key
     publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
-    # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+
     parents = [ "lighthouse" "gregnet" ];
     peers = [ ];
   };
@@ -50,10 +43,9 @@
   nyaa = {
     ip = "10.128.0.4/9";
     allowedIPs = [ "10.128.0.4/32" ];
-    # Wireguard Public Key
     publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
-    # Where to find the Wireguard Private Key
     privateKeyFile = "/key/secrets/wg/private.key";
+
     parents = [ "lighthouse" "archive" "gregnet" ];
     peers = [ ];
   };
@@ -69,9 +61,7 @@
     isNAT = true;
     allowedIPs = [ "10.129.0.0/16" ];
     listenPort = 667;
-    # TODO: Make the internal variant
     endpoint = "tartarus.hell.cool:667";
-    # Wireguard Public Key
     publicKey = "UR+lejpKmgS5UKri4/wA/Q57vfGhhCoCbW3Fk8qqVxA=";
   };
 }
