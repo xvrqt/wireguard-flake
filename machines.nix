@@ -46,7 +46,7 @@
     publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
     privateKeyFile = "/key/secrets/wg/private.key";
 
-    parents = [ "lighthouse" "archive" "gregnet" ];
+    parents = [ "lighthouse" ];
     peers = [ ];
   };
   # Emme's Cell Phone (not managed by this flake)
