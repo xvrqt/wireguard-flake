@@ -10,7 +10,7 @@
     # This server will need to pass packets on to another server
     routesTraffic = true;
     parents = [ ];
-    peers = [ "spark" "archive" "third_lobe" "gregnet" ];
+    peers = [ "spark" "archive" "third_lobe" "gregnet" "nyaa" ];
   };
   # Home Server
   archive = {
