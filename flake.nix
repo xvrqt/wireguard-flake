@@ -16,6 +16,8 @@
           secrets.nixosModules.default
           # Configure the Wireguard interface
           (import ./wireguard { inherit lib name config machines; })
+          # Configure the Tailnet
+          (import ./tailscale { inherit name machines; })
         ];
       };
     in
@@ -36,32 +38,5 @@
           })
           names
       );
-      #   {
-      #   archive = { lib, config, ... }:
-      #     let
-      #       name = "archive";
-      #       inherit machines;
-      #     in
-      #     {
-      #       imports = [
-      #         secrets.nixosModules.default
-      #         (import ./wireguard { inherit lib name config machines; })
-      #       ];
-      #     };
-      #   lighthouse = { lib, config, ... }:
-      #     let
-      #       name = "lighthouse";
-      #       inherit machines;
-      #     in
-      #     {
-      #       imports = [
-      #         secrets.nixosModules.default
-      #         (import ./wireguard { inherit lib name config machines; })
-      #       ];
-      #     };
-      #   spark = { lib, config, ... }: cfg {
-      #     inherit lib config; name = "spark";
-      #   };
-      # };
     };
 }

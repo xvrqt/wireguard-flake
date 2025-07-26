@@ -9,6 +9,10 @@
       };
     };
 
+    ts = {
+      routingFeatures = "both";
+    };
+
     wg = {
       endpoint = "lighthouse.machines.xvrqt.com";
       publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
@@ -23,6 +27,10 @@
         tailnet = "100.64.0.3";
         local = "192.168.1.6";
       };
+    };
+
+    ts = {
+      routingFeatures = "both";
     };
 
     wg = {
@@ -40,6 +48,10 @@
       };
     };
 
+    ts = {
+      routingFeatures = "client";
+    };
+
     wg = {
       publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
     };
@@ -53,6 +65,9 @@
         local = "192.168.1.10";
       };
     };
+    ts = {
+      routingFeatures = "client";
+    };
     wg = {
       publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
     };
@@ -65,6 +80,9 @@
         tailnet = "100.64.0.1";
         local = "192.168.1.4";
       };
+    };
+    ts = {
+      routingFeatures = "client";
     };
     wg = {
       publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
