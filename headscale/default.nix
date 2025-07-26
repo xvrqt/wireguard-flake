@@ -20,29 +20,54 @@ let
 in
 if cfgCheck then {
   # Run a Headscale coordination server for all other nodes
-  services.headscale = {
-    enable = true;
-    inherit port address;
+  services = {
+    headscale = {
+      enable = true;
+      inherit port address;
 
-    settings = {
-      # Where new clients can sign up
-      server_url = "https://${gateway_subdomain}";
+      settings = {
+        # Where new clients can sign up
+        server_url = "https://${gateway_subdomain}";
 
-      # This is what the developers recommend and what they test on
-      # PostGres seems heavy for such a simple VPS 
-      database.type = "sqlite";
+        # This is what the developers recommend and what they test on
+        # PostGres seems heavy for such a simple VPS 
+        database.type = "sqlite";
 
-      dns = {
-        # Headscale will automatically assign every machine a domain name
-        # using the scheme <name>.<base_domain> and keep it updated
-        magic_dns = true;
-        base_domain = machines_subdomain;
+        dns = {
+          # Headscale will automatically assign every machine a domain name
+          # using the scheme <name>.<base_domain> and keep it updated
+          magic_dns = true;
+          base_domain = machines_subdomain;
 
-        # Since this is the base domain all services will be hosted on
-        search_domains = [ domain ];
-        # Use this machine as the DNS server (Blocky is also running here)
-        # Use it over the Tailnet so that the DNS traffic is encrypted
-        nameservers.global = [ "100.64.0.8" ];
+          # Since this is the base domain all services will be hosted on
+          search_domains = [ domain ];
+          # Use this machine as the DNS server (Blocky is also running here)
+          # Use it over the Tailnet so that the DNS traffic is encrypted
+          nameservers.global = [ "100.64.0.8" ];
+        };
+      };
+    };
+    # Reverse Proxy
+    nginx = {
+      virtualHosts."${gateway_subdomain}" = {
+        # Listen on the clear net, tailnet and wireguard interfaces
+        listenAddresses = [
+          machine.ip.v4.www
+          machine.ip.v4.tailnet
+          machine.ip.v4.wg
+        ];
+
+        # HTTPS only
+        forceSSL = true;
+        acmeRoot = null;
+        enableACME = true;
+
+        # Pass back to the Headscale service
+        locations."/" = {
+          proxyPass = "http://localhost:${toString config.services.headscale.port}";
+          proxyWebsockets = true;
+          recommendedProxySettings = true;
+        };
       };
     };
   };
@@ -52,30 +77,6 @@ if cfgCheck then {
     firewall = {
       allowedTCPPorts = [ config.services.headscale.port ];
       allowedUDPPorts = [ config.services.headscale.port ];
-    };
-  };
-
-  # Reverse Proxy
-  nginx = {
-    virtualHosts."${gateway_subdomain}" = {
-      # Listen on the clear net, tailnet and wireguard interfaces
-      listenAddresses = [
-        machine.ip.v4.www
-        machine.ip.v4.tailnet
-        machine.ip.v4.wg
-      ];
-
-      # HTTPS only
-      forceSSL = true;
-      acmeRoot = null;
-      enableACME = true;
-
-      # Pass back to the Headscale service
-      locations."/" = {
-        proxyPass = "http://localhost:${toString config.services.headscale.port}";
-        proxyWebsockets = true;
-        recommendedProxySettings = true;
-      };
     };
   };
 
