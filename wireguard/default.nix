@@ -32,7 +32,7 @@ in
 
   # If we are publicly available for other machines to connect to use, ensure
   # the Wireguard UDP port is open
-  networking.firewall = lib.mkIf (machine?wg.endpoint) {
+  networking.firewall = lib.mkIf (machine.wg?endpoint) {
     allowedUDPPorts = [ port ];
   };
 
