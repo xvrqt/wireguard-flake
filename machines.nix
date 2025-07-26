@@ -10,12 +10,8 @@
     };
 
     wg = {
-      endpoint = "lighthouse.machines.xvrqt.com:16842";
-      allowedIPs = [ "10.128.0.1/32" ];
+      endpoint = "lighthouse.machines.xvrqt.com";
       publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
-
-      # TODO make this static
-      privateKeyFile = "/key/secrets/wg/private.key";
     };
   };
   # Home Server
@@ -30,11 +26,8 @@
     };
 
     wg = {
-      allowedIPs = [ "10.128.0.2/32" ];
-      endpoint = "archive.machines.xvrqt.com:16842";
+      endpoint = "archive.machines.xvrqt.com";
       publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
-      # TODO delete me 
-      privateKeyFile = "/key/secrets/wg/private.key";
     };
   };
   # Apple M1 Ashai-Linux Lappy
@@ -48,10 +41,7 @@
     };
 
     wg = {
-      allowedIPs = [ "10.128.0.3/32" ];
       publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
-      # TODO delete me 
-      privateKeyFile = "/key/secrets/wg/private.key";
     };
   };
   # Amy's Cell Phone (not managed by this flake)
@@ -64,7 +54,6 @@
       };
     };
     wg = {
-      allowedIPs = [ "10.128.0.4/32" ];
       publicKey = "ma+LA7hdq9ayI26Ev0w0MyNFmSUNfBbsDU7+3/85Tis=";
     };
   };
@@ -78,9 +67,7 @@
       };
     };
     wg = {
-      allowedIPs = [ "10.128.0.4/32" ];
       publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
-      privateKeyFile = "/key/secrets/wg/private.key";
     };
   };
 }

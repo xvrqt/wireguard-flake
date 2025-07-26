@@ -32,7 +32,7 @@ in
 
   # If we are publicly available for other machines to connect to use, ensure
   # the Wireguard UDP port is open
-  networking.firewall = lib.mkIf (machine?endpoint) {
+  networking.firewall = lib.mkIf (machine?wg.endpoint) {
     allowedUDPPorts = [ port ];
   };
 
@@ -45,7 +45,7 @@ in
       # Key that is used to encrypt traffic
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
       # The port we're listening on if we're an endpoint
-      listenPort = lib.mkIf (machine?endpoint) machine.endpoint;
+      listenPort = lib.mkIf (machine.wg?endpoint) machine.wg.endpoint;
       # A list of peers to connect to, and allow connections to
       peers = (import (./. + "/${name}.nix") { inherit pka port machines; });
     };
