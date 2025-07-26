@@ -45,7 +45,7 @@ in
       # Key that is used to encrypt traffic
       privateKeyFile = config.age.secrets.wgPrivateKey.path;
       # The port we're listening on if we're an endpoint
-      listenPort = lib.mkIf (machine.wg?endpoint) machine.wg.endpoint;
+      listenPort = lib.mkIf (machine.wg?endpoint) port;
       # A list of peers to connect to, and allow connections to
       peers = (import (./. + "/${name}.nix") { inherit pka port machines; });
     };
