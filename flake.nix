@@ -18,6 +18,8 @@
           (import ./wireguard { inherit lib name config machines; })
           # Configure the Tailnet
           (import ./tailscale { inherit name machines; })
+          # Configure the Headscale coordination server
+          (import ./headscale { inherit name config machines; })
         ];
       };
     in
