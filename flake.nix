@@ -20,6 +20,17 @@
               (import ./wireguard { inherit lib name config machines; })
             ];
           };
+        lighthouse = { lib, config, ... }:
+          let
+            name = "lighthouse";
+            inherit machines;
+          in
+          {
+            imports = [
+              secrets.nixosModules.default
+              (import ./wireguard { inherit lib name config machines; })
+            ];
+          };
         spark = { lib, config, ... }:
           let
             name = "spark";
