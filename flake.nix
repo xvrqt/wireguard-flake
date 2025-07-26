@@ -5,7 +5,7 @@
   outputs =
     { secrets, ... }:
     let
-      names = [ "lighthouse" "archive" "spark" "third-lobe" ];
+      names = [ "lighthouse" "archive" "spark" "nyaa" "third-lobe" ];
       machines = import ./machines.nix;
 
       # Keeping things DRY
