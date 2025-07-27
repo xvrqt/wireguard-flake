@@ -89,7 +89,7 @@ in
               "dns.irlqt.net" = self;
 
               # Services hosted by the Lighthouse (this node)
-              "gateway.irlqt.net" = lighthouse;
+              "gateway.irlqt.net" = machines.lighthouse.ip.v4.www;
               "irlqt.net" = lighthouse;
 
               # Services Hosted by the Archive
