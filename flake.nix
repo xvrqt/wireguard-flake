@@ -3,7 +3,8 @@
     # Used to set up Wireguard keys
     secrets.url = "git+https://git.irlqt.net/crow/secrets-flake";
     # Sets up the reverse proxy
-    websites.url = "git+https://git.irlqt.net/crow/websites-flake";
+    websites.url = "git+https://git.irlqt.net/crow/website-flake";
+    websites.inputs.secrets.follows = "secrets";
   };
   outputs =
     { secrets, websites, ... }:
