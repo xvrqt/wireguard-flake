@@ -27,7 +27,7 @@
             # Configure the Tailnet
             (import ./tailscale { inherit name machines; })
             # Configure the Headscale coordination server on Lighthouse
-            (import ./headscale { inherit name config machines; })
+            (import ./headscale { inherit lib name config machines; })
           ];
         };
     in
