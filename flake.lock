@@ -577,11 +577,11 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1753577356,
-        "narHash": "sha256-Zek9VfemE+kHDVTHBTgpB2SBSEt7/d3Ztk+0RvXDGLM=",
+        "lastModified": 1753577485,
+        "narHash": "sha256-Q+cnXa0fgT+Ca3znBBYtcBGVgHaQs+i8ylkIH6PSq+w=",
         "ref": "refs/heads/master",
-        "rev": "84e4757d64d4dfe1d8d39bc36210cf7f98119e43",
-        "revCount": 65,
+        "rev": "aa52f239629896fa6009e37ff1a5fba2bc5fa6fb",
+        "revCount": 66,
         "type": "git",
         "url": "https://git.irlqt.net/crow/website-flake"
       },
