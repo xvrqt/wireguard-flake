@@ -14,7 +14,10 @@ in
   networking = {
     # All the machines should be using DNS through the Tailnet
     # If they don't for some reason, try these as fallbacks
-    nameservers = [ dns.personal.tailnet dns.personal.wg dns.personal.www ] ++ dns.quad9.ip.v4 ++ dns.quad9.ip.v6;
+    nameservers =
+      # If you're running a DNS server then just use yourself 
+      if is_nameserver then [ "127.0.0.1" ]
+      else [ dns.personal.tailnet dns.personal.wg dns.personal.www ] ++ dns.quad9.ip.v4 ++ dns.quad9.ip.v6;
     # Don't let NetworkManager change these settings
     networkmanager.dns = "none";
 
@@ -39,6 +42,7 @@ in
         recommendedProxySettings = true;
       };
     };
+
     blocky = {
       enable = true;
 
@@ -63,7 +67,7 @@ in
         # Used to lookup and resolve domain names used in the upstreams list
         # Using Quad1 and Google to distribute risk they all go down
         bootstrapDns = {
-          ips = dns.quad9.ip.v4 ++ dns.quad9.ip.v6;
+          ips = [ "1.1.1.1" "8.8.8.8" ];
           upstream = "https://one.one.one.one/dns/query";
         };
 
