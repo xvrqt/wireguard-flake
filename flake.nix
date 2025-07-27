@@ -11,7 +11,7 @@
       machines = import ./machines.nix;
       headscale = import ./headscale/cfg.nix;
       wireguard = import ./wireguard/cfg.nix;
-      tailscale = import ./tatailscale/cfg.nix;
+      tailscale = import ./tailscale/cfg.nix;
 
       # Keeping things DRY
       cfg = { lib, pkgs, name, config, ... }:
@@ -30,7 +30,7 @@
             # Configure the Tailnet
             (import ./tailscale { inherit name machines tailscale; })
             # Configure the Headscale coordination server on Lighthouse
-            (import ./headscale { inherit lib dns name config machines; })
+            (import ./headscale { inherit lib dns name config machines headscale; })
             # Sets nameservers, and sets up DNS servers for certain machines
             (import ./dns { inherit lib dns pkgs name machines; })
 
