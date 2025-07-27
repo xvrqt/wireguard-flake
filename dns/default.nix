@@ -163,5 +163,6 @@ in
   # For DNS debugging
   environment.systemPackages = [
     pkgs.dig
+    pkgs.dnslookup
   ];
 }
