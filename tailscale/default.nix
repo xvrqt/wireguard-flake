@@ -1,8 +1,5 @@
-{ name, machines, ... }:
+{ name, machines, tailscale, ... }:
 let
-  # Tailscale interface name
-  interface = "irlqt-net";
-
   # Grab the specific machine we're configuring
   machine = machines."${name}";
 in
@@ -13,7 +10,7 @@ in
     tailscale = {
       enable = true;
       openFirewall = true;
-      interfaceName = interface;
+      interfaceName = tailscale.interface;
       useRoutingFeatures = machine.ts.routingFeatures;
     };
   };

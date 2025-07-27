@@ -1,7 +1,7 @@
-{ lib, name, config, machines, ... }:
+{ lib, name, config, machines, wireguard, ... }:
 let
   # Wireguard interface name
-  interface = "amy-net";
+  interface = wireguard.interface;
   # Which point endpoints should keep open for connection
   port = 16842;
   # Persistent Keep Alive timing in seconds

@@ -7,8 +7,11 @@
     { secrets, ... }:
     let
       names = [ "lighthouse" "archive" "spark" "nyaa" "third-lobe" ];
-      dns = (import ./dns.nix { inherit machines; });
+      dns = (import ./dns/cfg.nix { inherit machines; });
       machines = import ./machines.nix;
+      headscale = import ./headscale/cfg.nix;
+      wireguard = import ./wireguard/cfg.nix;
+      tailscale = import ./tatailscale/cfg.nix;
 
       # Keeping things DRY
       cfg = { lib, pkgs, name, config, ... }:
@@ -20,14 +23,17 @@
             # Sets up the reverse proxy for hosts that need it
             # (if needs_proxy then websites.nixosModules.minimal else null)
 
+            # General network settings that should be in effect across all devices
+            (import ./general.nix { inherit pkgs name config tailscale wireguard; })
             # Configure the Wireguard interface
-            (import ./wireguard { inherit lib name config machines; })
+            (import ./wireguard { inherit lib name config machines wireguard; })
             # Configure the Tailnet
-            (import ./tailscale { inherit name machines; })
+            (import ./tailscale { inherit name machines tailscale; })
             # Configure the Headscale coordination server on Lighthouse
             (import ./headscale { inherit lib dns name config machines; })
             # Sets nameservers, and sets up DNS servers for certain machines
             (import ./dns { inherit lib dns pkgs name machines; })
+
           ];
         };
     in

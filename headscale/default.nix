@@ -1,11 +1,11 @@
-{ lib, dns, name, config, machines, ... }:
+{ lib, dns, name, config, machines, headscale, ... }:
 let
   # Where to serve from, and which addresses to accept
   port = 8080;
   address = "0.0.0.0";
 
   # Basedomain
-  domain = "irlqt.net";
+  domain = headscale.domain;
   # Where new clients can register
   gateway_subdomain = "gateway.${domain}";
   # MagicDNS will assign every machine a URL using this scheme
