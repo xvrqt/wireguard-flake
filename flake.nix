@@ -2,12 +2,9 @@
   inputs = {
     # Used to set up Wireguard keys
     secrets.url = "git+https://git.irlqt.net/crow/secrets-flake";
-    # Sets up the reverse proxy
-    websites.url = "git+https://git.irlqt.net/crow/website-flake";
-    websites.inputs.secrets.follows = "secrets";
   };
   outputs =
-    { secrets, websites, ... }:
+    { secrets, ... }:
     let
       names = [ "lighthouse" "archive" "spark" "nyaa" "third-lobe" ];
       machines = import ./machines.nix;
@@ -15,7 +12,7 @@
       # Keeping things DRY
       cfg = { lib, name, config, ... }:
         let
-          needs_proxy = (name == "lighthouse");
+          #
         in
         {
           imports = [
@@ -23,7 +20,7 @@
             # Wireguard private keys on each machine
             secrets.nixosModules.default
             # Sets up the reverse proxy for hosts that need it
-            (if needs_proxy then websites.nixosModules.minimal else null)
+            # (if needs_proxy then websites.nixosModules.minimal else null)
 
             # Configure the Wireguard interface
             (import ./wireguard { inherit lib name config machines; })

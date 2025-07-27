@@ -1,4 +1,4 @@
-{ name, config, machines, ... }:
+{ lib, name, config, machines, ... }:
 let
   # Where to serve from, and which addresses to accept
   port = 8080;
@@ -17,6 +17,8 @@ let
 
   # Only enable this for the Lighthouse
   cfgCheck = (name == "lighthouse");
+  # Only enable the reverse proxy if it's available
+  reverse_proxy_present = config.services?websites && config.services.websites?enable;
 in
 if cfgCheck then {
   # Run a Headscale coordination server for all other nodes
@@ -48,7 +50,7 @@ if cfgCheck then {
       };
     };
     # Reverse Proxy
-    nginx = {
+    nginx = lib.mkIf reverse_proxy_present {
       virtualHosts."${gateway_subdomain}" = {
         # Listen on the clear net, tailnet and wireguard interfaces
         listenAddresses = [
