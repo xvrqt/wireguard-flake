@@ -105,6 +105,7 @@ in
               "search.irlqt.net" = archive;
               "sonarr.irlqt.net" = archive;
               "torrents.irlqt.net" = archive;
+              "wiki.irlqt.net" = archive;
             };
         };
 
