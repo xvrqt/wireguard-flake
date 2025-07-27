@@ -1,4 +1,4 @@
-{ lib, name, config, machines, ... }:
+{ lib, dns, name, config, machines, ... }:
 let
   # Where to serve from, and which addresses to accept
   port = 8080;
@@ -45,7 +45,7 @@ if cfgCheck then {
           search_domains = [ domain ];
           # Use this machine as the DNS server (Blocky is also running here)
           # Use it over the Tailnet so that the DNS traffic is encrypted
-          nameservers.global = [ "100.64.0.8" ];
+          nameservers.global = [ dns.personal.tailnet ];
         };
       };
     };

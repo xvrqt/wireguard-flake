@@ -7,13 +7,11 @@
     { secrets, ... }:
     let
       names = [ "lighthouse" "archive" "spark" "nyaa" "third-lobe" ];
+      dns = import ./dns { inherit machines; };
       machines = import ./machines.nix;
 
       # Keeping things DRY
       cfg = { lib, pkgs, name, config, ... }:
-        let
-          #
-        in
         {
           imports = [
             # Needs the secrets module to function since we will be deploying
@@ -27,9 +25,9 @@
             # Configure the Tailnet
             (import ./tailscale { inherit name machines; })
             # Configure the Headscale coordination server on Lighthouse
-            (import ./headscale { inherit lib name config machines; })
+            (import ./headscale { inherit lib dns name config machines; })
             # Sets nameservers, and sets up DNS servers for certain machines
-            (import ./dns { inherit pkgs lib name config machines; })
+            (import ./dns { inherit lib dns pkgs name machines; })
           ];
         };
     in
