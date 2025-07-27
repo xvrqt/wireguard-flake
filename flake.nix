@@ -1,27 +1,37 @@
 {
   inputs = {
+    # Used to set up Wireguard keys
     secrets.url = "git+https://git.irlqt.net/crow/secrets-flake";
+    # Sets up the reverse proxy
+    websites.url = "git+https://git.irlqt.net/crow/websites-flake";
   };
   outputs =
-    { secrets, ... }:
+    { secrets, websites, ... }:
     let
       names = [ "lighthouse" "archive" "spark" "nyaa" "third-lobe" ];
       machines = import ./machines.nix;
 
       # Keeping things DRY
-      cfg = { lib, name, config, ... }: {
-        imports = [
-          # Needs the secrets module to function since we will be deploying
-          # Wireguard private keys on each machine
-          secrets.nixosModules.default
-          # Configure the Wireguard interface
-          (import ./wireguard { inherit lib name config machines; })
-          # Configure the Tailnet
-          (import ./tailscale { inherit name machines; })
-          # Configure the Headscale coordination server
-          (import ./headscale { inherit name config machines; })
-        ];
-      };
+      cfg = { lib, name, config, ... }:
+        let
+          needs_proxy = (name == "lighthouse");
+        in
+        {
+          imports = [
+            # Needs the secrets module to function since we will be deploying
+            # Wireguard private keys on each machine
+            secrets.nixosModules.default
+            # Sets up the reverse proxy for hosts that need it
+            (if needs_proxy then websites.nixosModules.minimal else null)
+
+            # Configure the Wireguard interface
+            (import ./wireguard { inherit lib name config machines; })
+            # Configure the Tailnet
+            (import ./tailscale { inherit name machines; })
+            # Configure the Headscale coordination server on Lighthouse
+            (import ./headscale { inherit name config machines; })
+          ];
+        };
     in
     {
       # For each 'name' in 'names'
