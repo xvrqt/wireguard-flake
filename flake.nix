@@ -7,7 +7,7 @@
     { secrets, ... }:
     let
       names = [ "lighthouse" "archive" "spark" "nyaa" "third-lobe" ];
-      dns = import ./dns { inherit machines; };
+      dns = (import ./dns.nix { inherit machines; });
       machines = import ./machines.nix;
 
       # Keeping things DRY

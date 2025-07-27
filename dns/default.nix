@@ -1,6 +1,6 @@
 { lib, dns, pkgs, name, machines, ... }:
 let
-  # Where to server DNS requests
+  # Where to serve DNS requests
   dnsPort = 53;
   httpPort = 5300;
 
