@@ -29,7 +29,6 @@
             (import ./headscale { inherit cfg lib name config; })
             # Sets nameservers, and sets up DNS servers for certain machines
             (import ./dns { inherit cfg lib pkgs name; })
-
           ];
         };
     in
@@ -50,5 +49,9 @@
           })
           names
       );
+
+      # Have this as an output so other flakes can configure themselves based
+      # on the addresses/names in this file
+      config = cfg;
     };
 }
