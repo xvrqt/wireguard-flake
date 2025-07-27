@@ -20,7 +20,7 @@
             # (if needs_proxy then websites.nixosModules.minimal else null)
 
             # General network settings that should be in effect across all devices
-            (import ./general.nix { inherit cfg pkgs name config; })
+            (import ./general.nix { inherit cfg pkgs name; })
             # Configure the Wireguard interface
             (import ./wireguard { inherit cfg lib name config; })
             # Configure the Tailnet

@@ -1,10 +1,13 @@
-{ cfg, pkgs, name, config, ... }: {
+{ cfg, pkgs, name, ... }: {
   # Networking
   networking = {
     # Give the machine a proper name
     hostName = name;
     firewall = {
       enable = true;
+      # Allow SSH Traffic
+      allowedTCPPorts = [ 22 ];
+      allowedUDPPorts = [ 22 ];
       trustedInterfaces = [ cfg.tailscale.interface cfg.wireguard.interface ];
     };
   };
