@@ -68,7 +68,7 @@ in
         # Using Quad1 and Google to distribute risk they all go down
         bootstrapDns = {
           ips = [ "1.1.1.1" "8.8.8.8" ];
-          upstream = "https://one.one.one.one/dns/query";
+          upstream = "https://one.one.one.one/dns-query";
         };
 
         # This is where you can register domains on the Dorkweb
