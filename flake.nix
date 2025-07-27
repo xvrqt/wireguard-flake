@@ -10,7 +10,7 @@
       machines = import ./machines.nix;
 
       # Keeping things DRY
-      cfg = { lib, name, config, ... }:
+      cfg = { lib, pkgs, name, config, ... }:
         let
           #
         in
@@ -28,6 +28,8 @@
             (import ./tailscale { inherit name machines; })
             # Configure the Headscale coordination server on Lighthouse
             (import ./headscale { inherit lib name config machines; })
+            # Sets nameservers, and sets up DNS servers for certain machines
+            (import ./dns { inherit pkgs lib name config machines; })
           ];
         };
     in
@@ -44,7 +46,7 @@
         map
           (item: {
             name = item;
-            value = { lib, config, ... }: cfg { inherit lib config; name = item; };
+            value = { pkgs, lib, config, ... }: cfg { inherit lib pkgs config; name = item; };
           })
           names
       );

@@ -17,6 +17,7 @@
       endpoint = "lighthouse.machines.xvrqt.com";
       publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
     };
+
   };
   # Home Server
   archive = {
