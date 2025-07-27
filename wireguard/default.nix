@@ -1,13 +1,14 @@
-{ lib, name, config, machines, wireguard, ... }:
+{ cfg, lib, name, config, ... }:
 let
   # Wireguard interface name
-  interface = wireguard.interface;
+  interface = cfg.wireguard.interface;
   # Which point endpoints should keep open for connection
   port = 16842;
   # Persistent Keep Alive timing in seconds
   pka = 25;
 
   # Grab the specific machine we're configuring
+  machines = cfg.machines;
   machine = machines."${name}";
 
   # Decrypts & Deploys the WG Key

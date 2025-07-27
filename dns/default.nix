@@ -1,5 +1,8 @@
-{ lib, dns, pkgs, name, machines, ... }:
+{ cfg, lib, pkgs, name, ... }:
 let
+  dns = cfg.dns;
+  machines = cfg.machines;
+
   # Where to serve DNS requests
   dnsPort = 53;
   httpPort = 5300;

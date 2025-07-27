@@ -1,7 +1,7 @@
-{ name, machines, tailscale, ... }:
+{ cfg, name, ... }:
 let
   # Grab the specific machine we're configuring
-  machine = machines."${name}";
+  machine = cfg.machines."${name}";
 in
 {
 
@@ -10,7 +10,7 @@ in
     tailscale = {
       enable = true;
       openFirewall = true;
-      interfaceName = tailscale.interface;
+      interfaceName = cfg.tailscale.interface;
       useRoutingFeatures = machine.ts.routingFeatures;
     };
   };

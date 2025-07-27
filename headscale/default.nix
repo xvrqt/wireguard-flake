@@ -1,19 +1,21 @@
-{ lib, dns, name, config, machines, headscale, ... }:
+{ cfg, lib, name, config, ... }:
 let
+  dns = cfg.dns;
+  machines = cfg.machines;
+  # The machine this is running on
+  machine = machines.${name};
+
   # Where to serve from, and which addresses to accept
   port = 8080;
   address = "0.0.0.0";
 
   # Basedomain
-  domain = headscale.domain;
+  domain = cfg.headscale.domain;
   # Where new clients can register
   gateway_subdomain = "gateway.${domain}";
   # MagicDNS will assign every machine a URL using this scheme
   # It cannot overlap with the gateway
   machines_subdomain = "machines.${domain}";
-
-  # The machine this is running on
-  machine = machines.${name};
 
   # Only enable this for the Lighthouse
   cfgCheck = (name == "lighthouse");

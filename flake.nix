@@ -7,14 +7,10 @@
     { secrets, ... }:
     let
       names = [ "lighthouse" "archive" "spark" "nyaa" "third-lobe" ];
-      dns = (import ./dns/cfg.nix { inherit machines; });
-      machines = import ./machines.nix;
-      headscale = import ./headscale/cfg.nix;
-      wireguard = import ./wireguard/cfg.nix;
-      tailscale = import ./tailscale/cfg.nix;
+      cfg = import ./cfg.nix;
 
       # Keeping things DRY
-      cfg = { lib, pkgs, name, config, ... }:
+      configureMachine = { lib, pkgs, name, config, ... }:
         {
           imports = [
             # Needs the secrets module to function since we will be deploying
@@ -24,15 +20,15 @@
             # (if needs_proxy then websites.nixosModules.minimal else null)
 
             # General network settings that should be in effect across all devices
-            (import ./general.nix { inherit pkgs name config tailscale wireguard; })
+            (import ./general.nix { inherit cfg pkgs name config; })
             # Configure the Wireguard interface
-            (import ./wireguard { inherit lib name config machines wireguard; })
+            (import ./wireguard { inherit cfg lib name config; })
             # Configure the Tailnet
-            (import ./tailscale { inherit name machines tailscale; })
+            (import ./tailscale { inherit cfg name; })
             # Configure the Headscale coordination server on Lighthouse
-            (import ./headscale { inherit lib dns name config machines headscale; })
+            (import ./headscale { inherit cfg lib name config; })
             # Sets nameservers, and sets up DNS servers for certain machines
-            (import ./dns { inherit lib dns pkgs name machines; })
+            (import ./dns { inherit cfg lib pkgs name; })
 
           ];
         };
@@ -50,7 +46,7 @@
         map
           (item: {
             name = item;
-            value = { pkgs, lib, config, ... }: cfg { inherit lib pkgs config; name = item; };
+            value = { pkgs, lib, config, ... }: configureMachine { inherit lib pkgs config; name = item; };
           })
           names
       );

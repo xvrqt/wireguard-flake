@@ -1,3 +1,0 @@
-{
-  interface = "irlqt-net";
-}
