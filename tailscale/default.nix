@@ -14,21 +14,6 @@ in
       openFirewall = true;
       interfaceName = cfg.tailscale.interface;
       useRoutingFeatures = machine.ts.routingFeatures;
-
-      extraUpFlags = lib.mkIf routes_packets [
-        "--advertise-tags tag:exit"
-      ];
-
-      extraSetFlags = lib.mkIf routes_packets [
-        "--advertise-exit-node"
-      ];
     };
-  };
-
-  # Enable IP packet forwarding
-  boot.kernel.sysctl = lib.mkIf routes_packets {
-    "net.ipv4.ip_forward" = 1;
-    "net.ipv4.conf.all.forwarding" = 1;
-    "net.ipv6.conf.all.forwarding" = 1;
   };
 }
