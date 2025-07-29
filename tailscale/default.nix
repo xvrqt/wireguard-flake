@@ -7,7 +7,7 @@ let
   exempt = (name == "lighthouse");
 in
 {
-  services = lib.mkIf !exempt {
+  services = lib.mkIf (!exempt) {
     # All machines are part of the tailnet
     tailscale = {
       enable = true;
