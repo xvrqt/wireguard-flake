@@ -21,9 +21,9 @@ in
     nameservers =
       # If you're running a DNS server then just use yourself 
       if is_nameserver then [ "127.0.0.1" ]
-      else [ dns.personal.tailnet dns.personal.wg dns.personal.www ] ++ dns.quad9.ip.v4 ++ dns.quad9.ip.v6;
+      else dns.personal ++ dns.quad9.ip.v4 ++ dns.quad9.ip.v6;
     # Don't let NetworkManager change these settings
-    networkmanager.dns = "none";
+    # networkmanager.dns = "none";
 
     # Open ports to allow connection to the DNS server
     firewall = lib.mkIf is_nameserver {
@@ -81,7 +81,7 @@ in
             let
               self = if (name == "archive") then archive else lighthouse;
               archive = machines.archive.ip.v4.tailnet;
-              lighthouse = machines.lighthouse.ip.v4.tailnet;
+              lighthouse = machines.lighthouse.ip.v4.www;
 
             in
             {

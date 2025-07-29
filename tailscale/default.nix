@@ -4,10 +4,10 @@ let
   machine = cfg.machines."${name}";
 
   # If this machine routes packets
-  routes_packets = (name == "lighthouse");
+  exempt = (name == "lighthouse");
 in
 {
-  services = {
+  services = lib.mkIf (!exempt) {
     # All machines are part of the tailnet
     tailscale = {
       enable = true;
@@ -16,11 +16,4 @@ in
       useRoutingFeatures = machine.ts.routingFeatures;
     };
   };
-
-  # Enable IP packet forwarding
-  # boot.kernel.sysctl = lib.mkIf routes_packets {
-  #   "net.ipv4.ip_forward" = 1;
-  #   "net.ipv4.conf.all.forwarding" = 1;
-  #   "net.ipv6.conf.all.forwarding" = 1;
-  # };
 }

@@ -53,7 +53,7 @@ if cfgCheck then {
           search_domains = [ domain ];
           # Use this machine as the DNS server (Blocky is also running here)
           # Use it over the Tailnet so that the DNS traffic is encrypted
-          nameservers.global = [ dns.personal.tailnet ];
+          nameservers.global = dns.personal;
         };
       };
     };
@@ -62,9 +62,8 @@ if cfgCheck then {
       virtualHosts."${gateway_subdomain}" = {
         # Listen on the clear net, tailnet and wireguard interfaces
         listenAddresses = [
-          machine.ip.v4.www
-          machine.ip.v4.tailnet
           machine.ip.v4.wg
+          machine.ip.v4.www
         ];
 
         # HTTPS only
