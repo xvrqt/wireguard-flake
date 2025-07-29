@@ -11,6 +11,7 @@ rec {
   dns = {
     # DNS servers I control, over various interfaces
     personal = [
+      machines.lighthouse.ip.v4.tailnet
       machines.archive.ip.v4.tailnet
       machines.archive.ip.v4.wg
       machines.lighthouse.ip.v4.wg
@@ -47,6 +48,7 @@ rec {
         publicKey = "CZc/OcuvBGUGDSll32yIidvPZr4WWRpKhs/a/ccPuWA=";
       };
 
+      git = "wg";
     };
     # Home Server
     archive = {
@@ -67,6 +69,8 @@ rec {
         endpoint = "archive.machines.xvrqt.com";
         publicKey = "SvnDMnuK8ZN+pED7rjhqhQUMq46cui/LrYurhfvHi2U=";
       };
+
+      git = "tailnet";
     };
     # Apple M1 Ashai-Linux Lappy
     spark = {
@@ -85,6 +89,8 @@ rec {
       wg = {
         publicKey = "paUrZfB470WVojQBL10kpL7+xUWZy6ByeTQzZ/qzv2A=";
       };
+
+      git = "tailnet";
     };
     # Amy's Cell Phone (not managed by this flake)
     third-lobe = {
@@ -117,6 +123,8 @@ rec {
       wg = {
         publicKey = "tHzr/Ej6G0qSX5mpn7U48ucdwk9TVuHZyxrDRfID50c=";
       };
+
+      git = "tailnet";
     };
   };
 
