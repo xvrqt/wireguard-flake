@@ -27,6 +27,9 @@ rec {
       https = [ "https://dns.quad9.net/dns-query" ];
       tls = [ "tcp-tls:dns.quad9.net" ];
     };
+
+    # Machines which act as nameservers
+    nameservers = [ "lighthouse" "archive" ];
   };
   machines = {
     # Wireguard

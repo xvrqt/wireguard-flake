@@ -11,8 +11,7 @@ let
   allBlockGroups = [ "ads" "suspicious" "tracking" "malicious" ];
 
   # If this machine should also act as a DNS server
-  is_nameserver = (name == "lighthouse" || name == "archive");
-  in_tailnet = (name != "lighthouse");
+  is_nameserver = builtins.elem name cfg.dns.nameservers;
 in
 {
   networking = {
@@ -22,8 +21,6 @@ in
       # If you're running a DNS server then just use yourself 
       if is_nameserver then [ "127.0.0.1" ]
       else dns.personal ++ dns.quad9.ip.v4 ++ dns.quad9.ip.v6;
-    # Don't let NetworkManager change these settings
-    # networkmanager.dns = "none";
 
     # Open ports to allow connection to the DNS server
     firewall = lib.mkIf is_nameserver {
@@ -79,10 +76,9 @@ in
         customDNS = {
           mapping =
             let
-              self = if (name == "archive") then archive else lighthouse;
+              self = machines."${name}".ip.v4.tailnet;
               archive = machines.archive.ip.v4.tailnet;
-              lighthouse = machines.lighthouse.ip.v4.www;
-
+              lighthouse = machines.lighthouse.ip.v4.tailnet;
             in
             {
               # DNS over HTTPS service
@@ -90,13 +86,13 @@ in
               "dns.irlqt.net" = self;
 
               # Services hosted by the Lighthouse (this node)
-              "gateway.irlqt.net" = machines.lighthouse.ip.v4.www;
               "irlqt.net" = lighthouse;
+              "gateway.irlqt.net" = machines.lighthouse.ip.v4.www;
 
               # Services Hosted by the Archive
-              "git.irlqt.net" = if in_tailnet then archive else machines.archive.ip.v4.wg;
               "cryptpad.irlqt.net" = archive;
               "cryptpad-sandbox.irlqt.net" = archive;
+              "git.irlqt.net" = archive;
               "immich.irlqt.net" = archive;
               "irlqt.me" = archive;
               "jellyseerr.irlqt.net" = archive;
