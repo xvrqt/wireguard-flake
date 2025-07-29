@@ -11,11 +11,11 @@ rec {
   dns = {
     # DNS servers I control, over various interfaces
     personal = [
-      machines.archive.ip.v4.tailnet;
-      machines.archive.ip.v4.wg;
-      machines.lighthouse.ip.v4.wg;
-      machines.lighthouse.ip.v4.www;
-      machines.archive.ip.v4.www;
+      machines.archive.ip.v4.tailnet
+      machines.archive.ip.v4.wg
+      machines.lighthouse.ip.v4.wg
+      machines.lighthouse.ip.v4.www
+      machines.archive.ip.v4.www
     ];
     # Quad9 - to use as upstream nameservers
     quad9 = {
