@@ -80,7 +80,7 @@ in
             let
               self = if (name == "archive") then archive else lighthouse;
               archive = machines.archive.ip.v4.tailnet;
-              lighthouse = machines.lighthouse.ip.v4.tailnet;
+              lighthouse = machines.lighthouse.ip.v4.www;
 
             in
             {
