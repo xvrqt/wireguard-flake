@@ -37,6 +37,12 @@ if cfgCheck then {
         # PostGres seems heavy for such a simple VPS 
         database.type = "sqlite";
 
+        # Access control of routes and resources
+        policy = {
+          mode = "file";
+          path = ./acl.json;
+        };
+
         dns = {
           # Headscale will automatically assign every machine a domain name
           # using the scheme <name>.<base_domain> and keep it updated

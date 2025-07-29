@@ -24,7 +24,7 @@
             # Configure the Wireguard interface
             (import ./wireguard { inherit cfg lib name config; })
             # Configure the Tailnet
-            (import ./tailscale { inherit cfg name; })
+            (import ./tailscale { inherit lib cfg name; })
             # Configure the Headscale coordination server on Lighthouse
             (import ./headscale { inherit cfg lib name config; })
             # Sets nameservers, and sets up DNS servers for certain machines
