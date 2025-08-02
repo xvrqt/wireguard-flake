@@ -94,6 +94,7 @@ in
 
               # Services hosted by the Lighthouse (this node)
               "irlqt.net" = lighthouse;
+              "mail.irlqt.me" = lighthouse;
               "gateway.irlqt.net" = machines.lighthouse.ip.v4.www;
 
               # Services Hosted by the Archive
