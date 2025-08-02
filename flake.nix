@@ -29,6 +29,8 @@
             (import ./headscale { inherit cfg lib name config; })
             # Sets nameservers, and sets up DNS servers for certain machines
             (import ./dns { inherit cfg lib pkgs name; })
+            # Use Fail2Ban to help reduce malicious traffic
+            (import ./fail2ban)
           ];
         };
     in

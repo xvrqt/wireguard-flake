@@ -12,6 +12,11 @@ let
 
   # If this machine should also act as a DNS server
   is_nameserver = builtins.elem name cfg.dns.nameservers;
+
+  # Only allow requests made over secure interfaces
+  wg_ip = "${cfg.machines."${name}".ip.v4.wg}:${toString dnsPort}";
+  tailnet_ip = "${cfg.machines."${name}".ip.v4.tailnet}:${toString dnsPort}";
+  blockyDNSPort = if is_nameserver then [ tailnet_ip wg_ip ] else dnsPort;
 in
 {
   networking = {
@@ -37,6 +42,8 @@ in
       forceSSL = true;
       enableACME = true;
       acmeRoot = null;
+      # Only allow internal people to use this endpoint
+      listenAddresses = [ "100.64.0.8" "10.128.0.1" ];
       locations."/" = {
         proxyPass = "http://127.0.0.1:${(builtins.toString httpPort)}";
         proxyWebsockets = false;
@@ -48,7 +55,7 @@ in
       enable = true;
 
       settings = {
-        ports.dns = dnsPort;
+        ports.dns = blockyDNSPort;
         ports.http = httpPort;
 
         caching = {
